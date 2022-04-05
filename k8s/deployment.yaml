@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: inventory-orchestrator
+  name: inventory-orchestrator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inventory-orchestrator
+  template:
+    metadata:
+      labels:
+        app: inventory-orchestrator
+    spec:
+      containers:
+      - image: dfdsdk/inventory-orchestrator:latest
+        name: inventory-orchestrator
