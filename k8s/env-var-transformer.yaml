@@ -1,0 +1,7 @@
+varReference:
+  - kind: ServiceAccount
+    path: metadata/annotations
+  - kind: CronJob
+    path: spec/schedule
+  # - kind: Deployment
+  #   path: spec/template/spec/containers[]/args

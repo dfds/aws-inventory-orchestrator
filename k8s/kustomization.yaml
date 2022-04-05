@@ -1,0 +1,33 @@
+resources:
+  - serviceaccount.yaml
+  - cronjob.yaml
+
+vars:
+  - name: ROLE_ARN
+    objref:
+      kind: ConfigMap
+      name: environment
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.ROLE_ARN
+  - name: CRON_SCHEDULE
+    objref:
+      kind: ConfigMap
+      name: environment
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.CRON_SCHEDULE
+#   - name: BUCKET_NAME
+#     objref:
+#       kind: ConfigMap
+#       name: environment
+#       apiVersion: v1
+#     fieldref:
+#       fieldpath: data.BUCKET_NAME
+
+configMapGenerator:
+  - name: environment
+    envs: [vars.env]
+
+configurations:
+  - env-var-transformer.yaml

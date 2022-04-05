@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: inventory-orchestrator
+  namespace: inventory
+spec:
+  schedule: $(CRON_SCHEDULE)
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: inventory-orchestrator-sa
+          containers:
+          - image: dfdsdk/inventory-orchestrator:latest
+            name: inventory-orchestrator
+          restartPolicy: OnFailure
