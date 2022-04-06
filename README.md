@@ -13,6 +13,7 @@
 - Terraform:
   - Inventory-Orchestrator IAM role (in billing/master)
   - Inventory-Runner IAM role (in dfds-security)
+  - OIDC provider in billing/master
 
 ### Inventory-Orchestrator and Runner trust relationship
 
