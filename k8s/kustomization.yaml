@@ -3,13 +3,20 @@ resources:
   - cronjob.yaml
 
 vars:
-  - name: ROLE_ARN
+  - name: ORCHESTRATOR_ROLE_ARN
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.ROLE_ARN
+      fieldpath: data.ORCHESTRATOR_ROLE_ARN
+  - name: RUNNER_ROLE_ARN
+    objref:
+      kind: ConfigMap
+      name: environment
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.RUNNER_ROLE_ARN
   - name: CRON_SCHEDULE
     objref:
       kind: ConfigMap
@@ -17,13 +24,6 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.CRON_SCHEDULE
-#   - name: BUCKET_NAME
-#     objref:
-#       kind: ConfigMap
-#       name: environment
-#       apiVersion: v1
-#     fieldref:
-#       fieldpath: data.BUCKET_NAME
 
 configMapGenerator:
   - name: environment
