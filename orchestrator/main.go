@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
-	"github.com/dfds/aws-inventory-orchestrator/orchestrator/aws"
+	"github.com/dfds/aws-inventory-orchestrator/orchestrator/orchaws"
 )
 
 func main() {
@@ -27,11 +27,7 @@ func main() {
 	fmt.Println(resp.String())
 
 	var includeAccountIds []string
-	acct, err := OrgAccountList(includeAccountIds)
-	//_._ = aws.OrgAccountList(includeAccountIds)
-	//_, _ = OrgAccountList(includeAccountIds)
-	// var includeAccountIds []string
-	// _, _ = OrgAccountList(includeAccountIds)
+	acct, err := orchaws.OrgAccountList(includeAccountIds)
 
 	if err != nil {
 		fmt.Println("%v\n", err)
@@ -40,5 +36,5 @@ func main() {
 			fmt.Println(*v.Id)
 		}
 	}
-	//time.Sleep(time.Second * 30)
+
 }
