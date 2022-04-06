@@ -14,7 +14,7 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-func CreateJob(jobName *string, image *string, cmd *string) {
+func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string) {
 
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
@@ -35,7 +35,7 @@ func CreateJob(jobName *string, image *string, cmd *string) {
 	jobSpec := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      *jobName,
-			Namespace: "default",
+			Namespace: *jobNamespace,
 		},
 		Spec: batchv1.JobSpec{
 			Template: v1.PodTemplateSpec{
@@ -56,7 +56,7 @@ func CreateJob(jobName *string, image *string, cmd *string) {
 
 	_, err = jobs.Create(context.TODO(), jobSpec, metav1.CreateOptions{})
 	if err != nil {
-		log.Fatalln("Failed to create K8s job.")
+		log.Fatalf("Failed to create K8s job. Error: %v\n", err)
 	}
 
 	//print job details
