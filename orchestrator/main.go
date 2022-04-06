@@ -25,5 +25,9 @@ func main() {
 	}
 
 	fmt.Println(resp.String())
+
+	var includeAccountIds []string
+	_, _ := OrgAccountList(includeAccountIds)
+
 	time.Sleep(time.Second * 30)
 }
