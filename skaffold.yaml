@@ -4,9 +4,9 @@ metadata:
   name: inventory-orchestrator
 build:
   artifacts:
-  - image: dfdsdk/inventory-orchestrator
-    docker:
-      dockerfile: Dockerfile
+    - image: dfdsdk/aws-inventory-orchestrator
+      docker:
+        dockerfile: Dockerfile
 deploy:
   kubectl:
     manifests:

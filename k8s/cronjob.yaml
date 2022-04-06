@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: inventory-orchestrator
+  name: aws-inventory-orchestrator
   namespace: inventory
 spec:
   schedule: $(CRON_SCHEDULE)
@@ -9,8 +9,8 @@ spec:
     spec:
       template:
         spec:
-          serviceAccountName: inventory-orchestrator-sa
+          serviceAccountName: aws-inventory-orchestrator-sa
           containers:
-          - image: dfdsdk/inventory-orchestrator:latest
-            name: inventory-orchestrator
+            - image: dfdsdk/aws-inventory-orchestrator:latest
+              name: orchestrator
           restartPolicy: OnFailure
