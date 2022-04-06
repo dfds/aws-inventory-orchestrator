@@ -1,7 +1,8 @@
-package aws
+package orchaws
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/organizations"
@@ -10,6 +11,7 @@ import (
 
 func OrgAccountList(includeAccountIds []string) ([]types.Account, error) {
 
+	fmt.Println("Getting list of accounts")
 	// try to create a default config instance
 	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("eu-west-1"))
 

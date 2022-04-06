@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sts"
+	"github.com/dfds/aws-inventory-orchestrator/orchestrator/aws"
 )
 
 func main() {
@@ -27,7 +27,18 @@ func main() {
 	fmt.Println(resp.String())
 
 	var includeAccountIds []string
-	_, _ := OrgAccountList(includeAccountIds)
+	acct, err := OrgAccountList(includeAccountIds)
+	//_._ = aws.OrgAccountList(includeAccountIds)
+	//_, _ = OrgAccountList(includeAccountIds)
+	// var includeAccountIds []string
+	// _, _ = OrgAccountList(includeAccountIds)
 
-	time.Sleep(time.Second * 30)
+	if err != nil {
+		fmt.Println("%v\n", err)
+	} else {
+		for _, v := range acct {
+			fmt.Println(*v.Id)
+		}
+	}
+	//time.Sleep(time.Second * 30)
 }
