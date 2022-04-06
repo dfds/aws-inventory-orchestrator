@@ -39,6 +39,35 @@
 
 Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
 
+## Sequence
+
+```mermaid
+sequenceDiagram
+    participant Orchestrator CronJob
+    participant Orchestrator IAM role
+    participant Runner Job
+
+    CronJob ->> AWS STS: Assume "Inventory-Orchestrator" IAM role
+    Alice ->> Bob: Hello Bob, how are you?
+    Bob-->>John: How about you John?
+    Bob--x Alice: I am good thanks!
+    Bob-x John: I am good thanks!
+    Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
+
+    Bob-->Alice: Checking with John...
+    Alice->John: Yes... John, how are you?
+```
+
+```mermaid
+graph TD
+    A["inventory-orchestrator" K8S CronJob] --> B("aws-inventory-orchestrator-sa" K8S SA)
+    B --> C["Inventory-Orchestrator" AWS IAM role ]
+    C -->|One| D[Laptop]
+    C -->|Two| E[iPhone]
+    C -->|Three| F[fa:fa-car Car]
+```
+
+
 ## Development
 
 *Work in progress.*
