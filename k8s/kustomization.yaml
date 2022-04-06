@@ -1,7 +1,9 @@
 resources:
   - serviceaccount.yaml
   - cronjob.yaml
-
+  - role.yaml
+  - rolebinding.yaml
+  
 vars:
   - name: ORCHESTRATOR_ROLE_ARN
     objref:
