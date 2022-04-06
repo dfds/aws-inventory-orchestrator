@@ -29,4 +29,4 @@ RUN go build -o /runner
 FROM alpine:latest
 COPY --from=builder /orchestrator /orchestrator
 COPY --from=builder /runner /runner
-CMD ["./orchestrator"]
+CMD ["./orchestrator/orchestrator"]
