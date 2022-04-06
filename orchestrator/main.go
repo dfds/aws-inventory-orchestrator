@@ -2,32 +2,31 @@ package main
 
 import (
 	"fmt"
-	"log"
 
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/sts"
-	"github.com/dfds/aws-inventory-orchestrator/orchestrator/orchaws"
+	// "github.com/aws/aws-sdk-go/aws"
+	// "github.com/aws/aws-sdk-go/aws/session"
+	// "github.com/aws/aws-sdk-go/service/sts"
+	"github.com/dfds/aws-inventory-orchestrator/orchestrator/aws"
 )
 
 func main() {
 
-	sess, err := session.NewSession(&aws.Config{Region: aws.String("eu-central-1")})
-	if err != nil {
-		log.Fatalln(err)
-	}
+	// sess, err := session.NewSession(&aws.Config{Region: aws.String("eu-central-1")})
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
 
-	stsCli := sts.New(sess)
+	// stsCli := sts.New(sess)
 
-	resp, err := stsCli.GetCallerIdentity(nil)
-	if err != nil {
-		log.Fatalln(err)
-	}
+	// resp, err := stsCli.GetCallerIdentity(nil)
+	// if err != nil {
+	// 	log.Fatalln(err)
+	// }
 
-	fmt.Println(resp.String())
+	// fmt.Println(resp.String())
 
 	var includeAccountIds []string
-	acct, err := orchaws.OrgAccountList(includeAccountIds)
+	acct, err := aws.OrgAccountList(includeAccountIds)
 
 	if err != nil {
 		fmt.Println("%v\n", err)

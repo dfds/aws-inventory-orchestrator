@@ -1,4 +1,4 @@
-package orchaws
+package aws
 
 import (
 	"context"
