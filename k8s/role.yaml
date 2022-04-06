@@ -7,3 +7,6 @@ rules:
 - apiGroups: [""] # "" indicates the core API group
   resources: ["pods"]
   verbs: ["get", "list"]
+- apiGroups: [""] # "" indicates the core API group
+  resources: ["jobs"]
+  verbs: ["create"]
