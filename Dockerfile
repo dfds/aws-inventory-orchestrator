@@ -16,17 +16,17 @@ RUN go mod download
 
 # Build Orchestrator
 WORKDIR /orchestrator/
-COPY ./orchestrator/*.go ./
+COPY ./orchestrator/ ./
 RUN go build -o /orchestrator
 #RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO11MODULE=on go build -mod=mod -a -o /main .
 
 # Build Runner
 WORKDIR /runner/
-COPY ./runner/*.go ./
+COPY ./runner/ ./
 RUN go build -o /runner
 
 # Copy binaries and run
 FROM alpine:latest
-COPY --from=builder /orchestrator /orchestrator
-COPY --from=builder /runner /runner
-CMD ["./orchestrator/orchestrator"]
+COPY --from=builder /orchestrator /
+COPY --from=builder /runner /
+ENTRYPOINT ["./orchestrator"]

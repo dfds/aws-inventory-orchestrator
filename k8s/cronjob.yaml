@@ -13,4 +13,6 @@ spec:
           containers:
             - image: dfdsdk/aws-inventory-orchestrator:latest
               name: orchestrator
+              args:
+              - $(INCLUDE_ACCOUNTS)
           restartPolicy: OnFailure

@@ -24,6 +24,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.CRON_SCHEDULE
+  - name: INCLUDE_ACCOUNTS
+    objref:
+      kind: ConfigMap
+      name: environment
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.INCLUDE_ACCOUNTS
 
 configMapGenerator:
   - name: environment

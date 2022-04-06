@@ -3,5 +3,5 @@ varReference:
     path: metadata/annotations
   - kind: CronJob
     path: spec/schedule
-  # - kind: Deployment
-  #   path: spec/template/spec/containers[]/args
+  - kind: CronJob
+    path: spec/jobTemplate/spec/template/spec/containers[]/args
