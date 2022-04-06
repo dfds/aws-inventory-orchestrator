@@ -46,13 +46,11 @@ Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
 Create `./k8s/vars.env`:
 
 ```env
-ROLE_ARN=<ARN of the AWS IAM role (typically 'Inventory-Orchestrator') for the workload to assume>
-CRON_SCHEDULE=<Cron Schedule>
+ORCHESTRATOR_ROLE_ARN=arn:aws:iam::$BILLING_ACCOUNT_ID:role/Inventory-Orchestrator
+RUNNER_ROLE_ARN=arn:aws:iam::$SECURITY_ACCOUNT_ID:role/Inventory-Runner
+CRON_SCHEDULE=* * * * *
 ```
 
-Suggested `CRON_SCHEDULE`:
-
-- Prod: `* * * * 0`
-- Dev: `* * * * *`
+Suggested prod `CRON_SCHEDULE`: `* * * * 0`
 
 Run `skaffold dev`.
