@@ -11,9 +11,11 @@ import (
 
 func main() {
 
+	// display caller identity; useful during the debug phase
 	callerIdentity := aws.GetCallerIdentity()
 	fmt.Println(callerIdentity)
 
+	// get accounts to target for inventory
 	includeAccountIds := strings.Split(os.Args[1], ",")
 	acct, err := aws.OrgAccountList(includeAccountIds)
 
@@ -25,15 +27,12 @@ func main() {
 		}
 	}
 
+	imageTag := "028bb0f-dirty"
 	jobName := "inventory-runner"
 	jobNamespace := "inventory"
-	//image := "dfdsdk/aws-inventory-orchestrator:latest"
-	//cmd := "./runner"
-	image := "ubuntu:latest"
-	cmd := "ls"
+	cmd := "./app/runner"
 
-	// kubernetes test which will read pod data
-	k8s.TestFunc()
+	image := fmt.Sprintf("dfdsdk/aws-inventory-orchestrator:%s", imageTag)
 
 	// kuberenetes test which will try to spawn a new job
 	k8s.CreateJob(&jobName, &jobNamespace, &image, &cmd)

@@ -4,9 +4,6 @@ metadata:
   namespace: inventory
   name: pod-reader
 rules:
-- apiGroups: [""] # "" indicates the core API group
-  resources: ["pods"]
-  verbs: ["get", "list"]
-- apiGroups: ["batch"] # "" indicates the core API group
+- apiGroups: ["batch"] 
   resources: ["jobs"]
   verbs: ["create"]
