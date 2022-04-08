@@ -14,5 +14,14 @@ spec:
             - image: dfdsdk/aws-inventory-orchestrator:latest
               name: orchestrator
               args:
-              - $(INCLUDE_ACCOUNTS)
+                - $(INCLUDE_ACCOUNTS)
+              env:
+                - name: MY_POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: MY_POD_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
           restartPolicy: OnFailure
