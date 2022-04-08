@@ -15,6 +15,13 @@ func main() {
 	callerIdentity := aws.GetCallerIdentity()
 	fmt.Println(callerIdentity)
 
+	imageTag := "513891c-dirty"
+	jobName := "inventory-runner"
+	jobNamespace := "inventory"
+	cmd := "./app/runner"
+
+	image := fmt.Sprintf("dfdsdk/aws-inventory-orchestrator:%s", imageTag)
+
 	// get accounts to target for inventory
 	includeAccountIds := strings.Split(os.Args[1], ",")
 	acct, err := aws.OrgAccountList(includeAccountIds)
@@ -24,16 +31,10 @@ func main() {
 	} else {
 		for _, v := range acct {
 			fmt.Println(*v.Id)
+
+			roleArn := fmt.Sprintf("arn:aws:iam::%s:role/inventory", *v.Id)
+			k8s.CreateJob(&jobName, &jobNamespace, &image, &cmd, &roleArn)
 		}
 	}
 
-	imageTag := "028bb0f-dirty"
-	jobName := "inventory-runner"
-	jobNamespace := "inventory"
-	cmd := "./app/runner"
-
-	image := fmt.Sprintf("dfdsdk/aws-inventory-orchestrator:%s", imageTag)
-
-	// kuberenetes test which will try to spawn a new job
-	k8s.CreateJob(&jobName, &jobNamespace, &image, &cmd)
 }

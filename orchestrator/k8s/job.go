@@ -2,6 +2,7 @@ package k8s
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"strings"
 
@@ -12,7 +13,10 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string) {
+func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string, roleArn *string) {
+
+	args := make([]string, 1)
+	args[0] = *roleArn
 
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
@@ -26,13 +30,13 @@ func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string
 	}
 
 	// get jobs collection in the inventory namespace
-	jobs := clientset.BatchV1().Jobs("inventory")
+	jobs := clientset.BatchV1().Jobs(*jobNamespace)
 	var backOffLimit int32 = 0
 
 	// create new job spec
 	jobSpec := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: *jobName,
+			GenerateName: fmt.Sprintf("%s-", *jobName),
 			Namespace:    *jobNamespace,
 		},
 		Spec: batchv1.JobSpec{
@@ -40,9 +44,10 @@ func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string
 				Spec: v1.PodSpec{
 					Containers: []v1.Container{
 						{
-							Name:    *jobName,
+							Name:    "runner",
 							Image:   *image,
 							Command: strings.Split(*cmd, " "),
+							Args:    args,
 						},
 					},
 					RestartPolicy: v1.RestartPolicyNever,

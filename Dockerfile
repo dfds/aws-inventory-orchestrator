@@ -7,7 +7,6 @@ RUN mkdir /src
 RUN mkdir /src/orchestrator
 RUN mkdir /src/runner
 RUN mkdir /app
-RUN mkdir ./monkeymagic
 
 # Download Orchestrator modules
 WORKDIR /src/orchestrator/
