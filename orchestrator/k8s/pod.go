@@ -3,13 +3,14 @@ package k8s
 import (
 	"context"
 	"os"
+	"strings"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
 	"k8s.io/client-go/rest"
 )
 
-func GetPodImageName() {
+func GetPodImageName() string {
 
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
@@ -31,6 +32,7 @@ func GetPodImageName() {
 		panic(err.Error())
 	}
 
-	_ = pod
-
+	image := pod.Spec.Containers[0].Image
+	imageName := strings.Split(image, "@")[0]
+	return imageName
 }

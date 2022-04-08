@@ -15,12 +15,12 @@ func main() {
 	callerIdentity := aws.GetCallerIdentity()
 	fmt.Println(callerIdentity)
 
-	imageTag := "513891c-dirty"
 	jobName := "inventory-runner"
 	jobNamespace := "inventory"
 	cmd := "./app/runner"
 
-	image := fmt.Sprintf("dfdsdk/aws-inventory-orchestrator:%s", imageTag)
+	image := k8s.GetPodImageName()
+	fmt.Println("Image Name: ", image)
 
 	// get accounts to target for inventory
 	includeAccountIds := strings.Split(os.Args[1], ",")
