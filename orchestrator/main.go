@@ -15,13 +15,6 @@ func main() {
 	callerIdentity := aws.GetCallerIdentity()
 	fmt.Println(callerIdentity)
 
-	jobName := "inventory-runner"
-	jobNamespace := "inventory"
-	cmd := "./app/runner"
-
-	image := k8s.GetPodImageName()
-	fmt.Println("Image Name: ", image)
-
 	// get accounts to target for inventory
 	includeAccountIds := strings.Split(os.Args[1], ",")
 	acct, err := aws.OrgAccountList(includeAccountIds)
@@ -33,7 +26,25 @@ func main() {
 			fmt.Println(*v.Id)
 
 			roleArn := fmt.Sprintf("arn:aws:iam::%s:role/inventory", *v.Id)
-			k8s.CreateJob(&jobName, &jobNamespace, &image, &cmd, &roleArn)
+
+			jobSpec := k8s.AssumeJobSpec{
+				JobName:      "aws-inventory-runner",
+				JobNamespace: "inventory",
+				// InitName:       "auth",
+				// InitImage:      k8s.GetPodImageName(),
+				// InitCmd:        []string{"./app/runner"},
+				// InitArgs:       []string{roleArn},
+				// ContainerName:  "inventory",
+				// ContainerImage: "amazon/aws-cli:latest",
+				// ContainerCmd:   []string{"/bin/bash", "-c", "--"},
+				// ContainerArgs:  []string{"aws sts get-caller-identity; sleep 3600"},
+				ContainerName:  "auth",
+				ContainerImage: k8s.GetPodImageName(),
+				ContainerCmd:   []string{"/bin/sh", "-c", "--"},
+				ContainerArgs:  []string{fmt.Sprintf("./app/runner %s; sleep 180", roleArn)},
+			}
+
+			k8s.CreateJob(&jobSpec)
 		}
 	}
 

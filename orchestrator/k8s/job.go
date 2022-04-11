@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"strings"
 
 	batchv1 "k8s.io/api/batch/v1"
 	v1 "k8s.io/api/core/v1"
@@ -13,10 +12,30 @@ import (
 	"k8s.io/client-go/rest"
 )
 
-func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string, roleArn *string) {
+const (
+	// PullAlways means that kubelet always attempts to pull the latest image. Container will fail If the pull fails.
+	PullAlways v1.PullPolicy = "Always"
+	// PullNever means that kubelet never pulls an image, but only uses a local image. Container will fail if the image isn't present
+	PullNever v1.PullPolicy = "Never"
+	// PullIfNotPresent means that kubelet pulls if the image isn't present on disk. Container will fail if the image isn't present and the pull fails.
+	PullIfNotPresent v1.PullPolicy = "IfNotPresent"
+)
 
-	args := make([]string, 1)
-	args[0] = *roleArn
+type AssumeJobSpec struct {
+	JobName      string
+	JobNamespace string
+	// InitName       string
+	// InitImage      string
+	// InitCmd        []string
+	// InitArgs       []string
+	ContainerName  string
+	ContainerImage string
+	ContainerCmd   []string
+	ContainerArgs  []string
+}
+
+// func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string, roleArn *string) {
+func CreateJob(assumeJobSpec *AssumeJobSpec) {
 
 	// creates the in-cluster config
 	config, err := rest.InClusterConfig()
@@ -30,38 +49,49 @@ func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string
 	}
 
 	// get jobs collection in the inventory namespace
-	jobs := clientset.BatchV1().Jobs(*jobNamespace)
+	jobs := clientset.BatchV1().Jobs(assumeJobSpec.JobNamespace)
 	var backOffLimit int32 = 0
 
 	// create new job spec
 	jobSpec := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
-			GenerateName: fmt.Sprintf("%s-", *jobName),
-			Namespace:    *jobNamespace,
+			GenerateName: fmt.Sprintf("%s-", assumeJobSpec.JobName),
+			Namespace:    assumeJobSpec.JobNamespace,
 		},
 		Spec: batchv1.JobSpec{
 			Template: v1.PodTemplateSpec{
 				Spec: v1.PodSpec{
+					// InitContainers: []v1.Container{
+					// 	{
+					// 		Name:    assumeJobSpec.InitName,
+					// 		Image:   assumeJobSpec.InitImage,
+					// ImagePullPolicy: PullAlways,
+					// 		Command: assumeJobSpec.InitCmd,
+					// 		Args:    assumeJobSpec.InitArgs,
+					// 	},
+					// },
 					Containers: []v1.Container{
 						{
-							Name:    "runner",
-							Image:   *image,
-							Command: strings.Split(*cmd, " "),
-							Args:    args,
+							Name:            assumeJobSpec.ContainerName,
+							Image:           assumeJobSpec.ContainerImage,
+							ImagePullPolicy: PullAlways,
+							Command:         assumeJobSpec.ContainerCmd,
+							Args:            assumeJobSpec.ContainerArgs,
 						},
 					},
-					RestartPolicy: v1.RestartPolicyNever,
+					RestartPolicy:      v1.RestartPolicyNever,
+					ServiceAccountName: "aws-inventory-runner-sa",
 				},
 			},
 			BackoffLimit: &backOffLimit,
 		},
 	}
 
-	_, err = jobs.Create(context.TODO(), jobSpec, metav1.CreateOptions{})
+	job, err := jobs.Create(context.TODO(), jobSpec, metav1.CreateOptions{})
 	if err != nil {
 		log.Fatalf("Failed to create K8s job. Error: %v\n", err)
 	}
 
 	//print job details
-	log.Println("Created K8s job successfully")
+	log.Printf("Job \"%s\" created successfully\n", job.ObjectMeta.Name)
 }

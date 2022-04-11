@@ -2,7 +2,6 @@ package aws
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -18,7 +17,7 @@ func AssumeRole(roleArn string) (*types.Credentials, error) {
 
 	stsClient := sts.NewFromConfig(cfg)
 
-	roleSessionName := "TBD"
+	roleSessionName := "inventory-runner"
 
 	assumedRole, err := stsClient.AssumeRole(context.TODO(), &sts.AssumeRoleInput{RoleArn: &roleArn, RoleSessionName: &roleSessionName})
 	if err != nil {
@@ -28,21 +27,4 @@ func AssumeRole(roleArn string) (*types.Credentials, error) {
 
 	return assumedRole.Credentials, nil
 
-}
-
-func AssumeRoleMultipleAccounts(accounts map[string]string) map[string]*types.Credentials {
-
-	assumedRoles := make(map[string]*types.Credentials)
-
-	for id, _ := range accounts {
-		roleArn := fmt.Sprintf("arn:aws:iam::%s:role/%s", id, "OrgRole")
-		role, err := AssumeRole(roleArn)
-		if err != nil {
-			fmt.Printf("Role Assummption Error: %v\n", err)
-		}
-		if role != nil {
-			assumedRoles[id] = role
-		}
-	}
-	return assumedRoles
 }
