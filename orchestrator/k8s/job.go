@@ -77,6 +77,12 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 							ImagePullPolicy: PullAlways,
 							Command:         assumeJobSpec.ContainerCmd,
 							Args:            assumeJobSpec.ContainerArgs,
+							// Env: []v1.EnvVar{
+							// 	{
+							// 		Name:  "AWS_ROLE_SESSION_NAME",
+							// 		Value: "inventory",
+							// 	},
+							// },
 						},
 					},
 					RestartPolicy:      v1.RestartPolicyNever,

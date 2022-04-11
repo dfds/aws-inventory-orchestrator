@@ -25,7 +25,7 @@ func main() {
 		for _, v := range acct {
 			fmt.Println(*v.Id)
 
-			roleArn := fmt.Sprintf("arn:aws:iam::%s:role/inventory", *v.Id)
+			roleArn := fmt.Sprintf("arn:aws:iam::%s:role/managed/inventory", *v.Id)
 
 			jobSpec := k8s.AssumeJobSpec{
 				JobName:      "aws-inventory-runner",
