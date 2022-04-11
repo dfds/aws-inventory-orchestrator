@@ -10,8 +10,6 @@ import (
 
 func main() {
 
-	fmt.Println("This is a job spawned by the Inventory-Orchestrator.")
-
 	assumedCreds, err := aws.AssumeRole(os.Args[1])
 	if err != nil {
 		panic(err.Error())

@@ -25,6 +25,8 @@ type AssumeJobSpec struct {
 	JobName            string
 	JobNamespace       string
 	ServiceAccountName string
+	VolumeName         string
+	VolumePath         string
 	InitName           string
 	InitImage          string
 	InitCmd            []string
@@ -64,7 +66,7 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 				Spec: v1.PodSpec{
 					Volumes: []v1.Volume{
 						{
-							Name: "aws-creds",
+							Name: assumeJobSpec.VolumeName,
 							VolumeSource: v1.VolumeSource{
 								EmptyDir: &v1.EmptyDirVolumeSource{},
 							},
@@ -77,16 +79,10 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 							ImagePullPolicy: PullAlways,
 							Command:         assumeJobSpec.InitCmd,
 							Args:            assumeJobSpec.InitArgs,
-							// Env: []v1.EnvVar{
-							// 	{
-							// 		Name:  "AWS_ROLE_SESSION_NAME",
-							// 		Value: "inventory",
-							// 	},
-							// },
 							VolumeMounts: []v1.VolumeMount{
 								{
-									Name:      "aws-creds",
-									MountPath: "/aws",
+									Name:      assumeJobSpec.VolumeName,
+									MountPath: assumeJobSpec.VolumePath,
 								},
 							},
 						},
@@ -100,16 +96,19 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 							Args:            assumeJobSpec.ContainerArgs,
 							VolumeMounts: []v1.VolumeMount{
 								{
-									Name:      "aws-creds",
-									MountPath: "/aws",
+									Name:      assumeJobSpec.VolumeName,
+									MountPath: assumeJobSpec.VolumePath,
 								},
 							},
 							Env: []v1.EnvVar{
 								{
 									Name:  "AWS_SHARED_CREDENTIALS_FILE",
-									Value: "/aws/creds",
+									Value: assumeJobSpec.VolumePath + "/creds",
 								},
 								{
+									// Clear the web indentity token
+									// so the mounted AWS profile is used
+									// instead of IRSA
 									Name:  "AWS_WEB_IDENTITY_TOKEN_FILE",
 									Value: "",
 								},

@@ -31,6 +31,8 @@ func main() {
 				JobName:            "aws-inventory-runner",
 				JobNamespace:       "inventory",
 				ServiceAccountName: "aws-inventory-runner-sa",
+				VolumeName:         "aws-creds",
+				VolumePath:         "/aws",
 				InitName:           "auth",
 				InitImage:          k8s.GetPodImageName(),
 				InitCmd:            []string{"./app/runner"},
@@ -39,10 +41,6 @@ func main() {
 				ContainerImage:     "amazon/aws-cli:latest",
 				ContainerCmd:       []string{"/bin/bash", "-c", "--"},
 				ContainerArgs:      []string{"aws sts get-caller-identity; sleep 3600"},
-				// ContainerName:  "auth",
-				// ContainerImage: k8s.GetPodImageName(),
-				// ContainerCmd:   []string{"/bin/sh", "-c", "--"},
-				// ContainerArgs:  []string{fmt.Sprintf("./app/runner %s; sleep 180", roleArn)},
 			}
 
 			k8s.CreateJob(&jobSpec)
