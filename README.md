@@ -39,6 +39,22 @@
 
 Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
 
+### Inventory-Runner and Runner policies
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::*:role/inventory"
+        }
+    ]
+}
+```
+
 ## Sequence
 
 ```mermaid
