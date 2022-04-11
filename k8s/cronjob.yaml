@@ -5,6 +5,8 @@ metadata:
   namespace: inventory
 spec:
   schedule: $(CRON_SCHEDULE)
+  failedJobsHistoryLimit: 1
+  successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
@@ -12,6 +14,7 @@ spec:
           serviceAccountName: aws-inventory-orchestrator-sa
           containers:
             - image: dfdsdk/aws-inventory-orchestrator:latest
+              imagePullPolicy: Always
               name: orchestrator
               args:
                 - $(INCLUDE_ACCOUNTS)
