@@ -17,7 +17,7 @@ func AssumeRole(roleArn string) (*types.Credentials, error) {
 
 	stsClient := sts.NewFromConfig(cfg)
 
-	roleSessionName := "inventory-runner"
+	roleSessionName := "inventory"
 
 	assumedRole, err := stsClient.AssumeRole(context.TODO(), &sts.AssumeRoleInput{RoleArn: &roleArn, RoleSessionName: &roleSessionName})
 	if err != nil {

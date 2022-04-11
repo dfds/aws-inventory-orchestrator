@@ -22,16 +22,17 @@ const (
 )
 
 type AssumeJobSpec struct {
-	JobName      string
-	JobNamespace string
-	// InitName       string
-	// InitImage      string
-	// InitCmd        []string
-	// InitArgs       []string
-	ContainerName  string
-	ContainerImage string
-	ContainerCmd   []string
-	ContainerArgs  []string
+	JobName            string
+	JobNamespace       string
+	ServiceAccountName string
+	InitName           string
+	InitImage          string
+	InitCmd            []string
+	InitArgs           []string
+	ContainerName      string
+	ContainerImage     string
+	ContainerCmd       []string
+	ContainerArgs      []string
 }
 
 // func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string, roleArn *string) {
@@ -61,15 +62,35 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 		Spec: batchv1.JobSpec{
 			Template: v1.PodTemplateSpec{
 				Spec: v1.PodSpec{
-					// InitContainers: []v1.Container{
-					// 	{
-					// 		Name:    assumeJobSpec.InitName,
-					// 		Image:   assumeJobSpec.InitImage,
-					// ImagePullPolicy: PullAlways,
-					// 		Command: assumeJobSpec.InitCmd,
-					// 		Args:    assumeJobSpec.InitArgs,
-					// 	},
-					// },
+					Volumes: []v1.Volume{
+						{
+							Name: "aws-creds",
+							VolumeSource: v1.VolumeSource{
+								EmptyDir: &v1.EmptyDirVolumeSource{},
+							},
+						},
+					},
+					InitContainers: []v1.Container{
+						{
+							Name:            assumeJobSpec.InitName,
+							Image:           assumeJobSpec.InitImage,
+							ImagePullPolicy: PullAlways,
+							Command:         assumeJobSpec.InitCmd,
+							Args:            assumeJobSpec.InitArgs,
+							// Env: []v1.EnvVar{
+							// 	{
+							// 		Name:  "AWS_ROLE_SESSION_NAME",
+							// 		Value: "inventory",
+							// 	},
+							// },
+							VolumeMounts: []v1.VolumeMount{
+								{
+									Name:      "aws-creds",
+									MountPath: "/aws",
+								},
+							},
+						},
+					},
 					Containers: []v1.Container{
 						{
 							Name:            assumeJobSpec.ContainerName,
@@ -77,16 +98,26 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 							ImagePullPolicy: PullAlways,
 							Command:         assumeJobSpec.ContainerCmd,
 							Args:            assumeJobSpec.ContainerArgs,
-							// Env: []v1.EnvVar{
-							// 	{
-							// 		Name:  "AWS_ROLE_SESSION_NAME",
-							// 		Value: "inventory",
-							// 	},
-							// },
+							VolumeMounts: []v1.VolumeMount{
+								{
+									Name:      "aws-creds",
+									MountPath: "/aws",
+								},
+							},
+							Env: []v1.EnvVar{
+								{
+									Name:  "AWS_SHARED_CREDENTIALS_FILE",
+									Value: "/aws/creds",
+								},
+								{
+									Name:  "AWS_WEB_IDENTITY_TOKEN_FILE",
+									Value: "",
+								},
+							},
 						},
 					},
 					RestartPolicy:      v1.RestartPolicyNever,
-					ServiceAccountName: "aws-inventory-runner-sa",
+					ServiceAccountName: assumeJobSpec.ServiceAccountName,
 				},
 			},
 			BackoffLimit: &backOffLimit,
