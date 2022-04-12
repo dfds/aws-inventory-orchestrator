@@ -38,9 +38,11 @@ func main() {
 				InitCmd:            []string{"./app/runner"},
 				InitArgs:           []string{roleArn},
 				ContainerName:      "inventory",
-				ContainerImage:     "amazon/aws-cli:latest",
-				ContainerCmd:       []string{"/bin/bash", "-c", "--"},
-				ContainerArgs:      []string{"aws sts get-caller-identity; sleep 3600"},
+				ContainerImage:     "darkbitio/aws_recon:latest",
+				// ContainerCmd:       []string{"aws_recon"},
+				// ContainerArgs:      []string{"-v", "-r", "global,eu-west-1,eu-central-1"},
+				ContainerCmd:  []string{"/bin/sh", "-c", "--"},
+				ContainerArgs: []string{"sleep 3600"},
 			}
 
 			k8s.CreateJob(&jobSpec)
