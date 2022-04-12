@@ -3,7 +3,7 @@ resources:
   - cronjob.yaml
   - role.yaml
   - rolebinding.yaml
-  
+
 vars:
   - name: ORCHESTRATOR_ROLE_ARN
     objref:
@@ -33,6 +33,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.INCLUDE_ACCOUNTS
+  - name: S3_BUCKET
+    objref:
+      kind: ConfigMap
+      name: environment
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.S3_BUCKET
 
 configMapGenerator:
   - name: environment

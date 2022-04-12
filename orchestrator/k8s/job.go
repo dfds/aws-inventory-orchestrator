@@ -22,22 +22,28 @@ const (
 )
 
 type AssumeJobSpec struct {
+	AccountId          string
 	JobName            string
 	JobNamespace       string
 	ServiceAccountName string
-	VolumeName         string
-	VolumePath         string
-	InitName           string
-	InitImage          string
-	InitCmd            []string
-	InitArgs           []string
-	ContainerName      string
-	ContainerImage     string
-	ContainerCmd       []string
-	ContainerArgs      []string
+	CredsVolName       string
+	CredsVolPath       string
+	OutputVolName      string
+	OutputVolPath      string
+	AssumeName         string
+	AssumeImage        string
+	AssumeCmd          []string
+	AssumeArgs         []string
+	InventoryName      string
+	InventoryImage     string
+	InventoryCmd       []string
+	InventoryArgs      []string
+	UploadName         string
+	UploadImage        string
+	UploadCmd          []string
+	UploadArgs         []string
 }
 
-// func CreateJob(jobName *string, jobNamespace *string, image *string, cmd *string, roleArn *string) {
 func CreateJob(assumeJobSpec *AssumeJobSpec) {
 
 	// creates the in-cluster config
@@ -66,7 +72,13 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 				Spec: v1.PodSpec{
 					Volumes: []v1.Volume{
 						{
-							Name: assumeJobSpec.VolumeName,
+							Name: assumeJobSpec.CredsVolName,
+							VolumeSource: v1.VolumeSource{
+								EmptyDir: &v1.EmptyDirVolumeSource{},
+							},
+						},
+						{
+							Name: assumeJobSpec.OutputVolName,
 							VolumeSource: v1.VolumeSource{
 								EmptyDir: &v1.EmptyDirVolumeSource{},
 							},
@@ -74,36 +86,38 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 					},
 					InitContainers: []v1.Container{
 						{
-							Name:            assumeJobSpec.InitName,
-							Image:           assumeJobSpec.InitImage,
+							Name:            assumeJobSpec.AssumeName,
+							Image:           assumeJobSpec.AssumeImage,
 							ImagePullPolicy: PullAlways,
-							Command:         assumeJobSpec.InitCmd,
-							Args:            assumeJobSpec.InitArgs,
+							Command:         assumeJobSpec.AssumeCmd,
+							Args:            assumeJobSpec.AssumeArgs,
 							VolumeMounts: []v1.VolumeMount{
 								{
-									Name:      assumeJobSpec.VolumeName,
-									MountPath: assumeJobSpec.VolumePath,
+									Name:      assumeJobSpec.CredsVolName,
+									MountPath: assumeJobSpec.CredsVolPath,
 								},
 							},
 						},
-					},
-					Containers: []v1.Container{
 						{
-							Name:            assumeJobSpec.ContainerName,
-							Image:           assumeJobSpec.ContainerImage,
+							Name:            assumeJobSpec.InventoryName,
+							Image:           assumeJobSpec.InventoryImage,
 							ImagePullPolicy: PullAlways,
-							Command:         assumeJobSpec.ContainerCmd,
-							Args:            assumeJobSpec.ContainerArgs,
+							Command:         assumeJobSpec.InventoryCmd,
+							Args:            assumeJobSpec.InventoryArgs,
 							VolumeMounts: []v1.VolumeMount{
 								{
-									Name:      assumeJobSpec.VolumeName,
-									MountPath: assumeJobSpec.VolumePath,
+									Name:      assumeJobSpec.CredsVolName,
+									MountPath: assumeJobSpec.CredsVolPath,
+								},
+								{
+									Name:      assumeJobSpec.OutputVolName,
+									MountPath: assumeJobSpec.OutputVolPath,
 								},
 							},
 							Env: []v1.EnvVar{
 								{
 									Name:  "AWS_SHARED_CREDENTIALS_FILE",
-									Value: assumeJobSpec.VolumePath + "/creds",
+									Value: assumeJobSpec.CredsVolPath + "/creds",
 								},
 								{
 									// Clear the web indentity token
@@ -111,6 +125,21 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 									// instead of IRSA
 									Name:  "AWS_WEB_IDENTITY_TOKEN_FILE",
 									Value: "",
+								},
+							},
+						},
+					},
+					Containers: []v1.Container{
+						{
+							Name:            assumeJobSpec.UploadName,
+							Image:           assumeJobSpec.UploadImage,
+							ImagePullPolicy: PullAlways,
+							Command:         assumeJobSpec.UploadCmd,
+							Args:            assumeJobSpec.UploadArgs,
+							VolumeMounts: []v1.VolumeMount{
+								{
+									Name:      assumeJobSpec.OutputVolName,
+									MountPath: assumeJobSpec.OutputVolPath,
 								},
 							},
 						},
