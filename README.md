@@ -12,6 +12,10 @@
   - Run as non-root
     - Can specify in Dockerfile?
     - CronJob and Job
+- Documentation diagrams
+- Replace "upload" container with Go program
+  - Gunzip before uploading? (~2+ MB x # accounts?)
+- Test with multiple accounts
 
 ### Inventory-Orchestrator and Runner trust relationship
 
@@ -39,6 +43,8 @@ Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
 
 ### Inventory-Runner policies
 
+AssumeInventoryRole:
+
 ```json
 {
     "Version": "2012-10-17",
@@ -48,6 +54,22 @@ Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
             "Resource": "arn:aws:iam::*:role/inventory"
+        }
+    ]
+}
+```
+
+UploadInventoryOutput
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::${BUCKET}/*"
         }
     ]
 }
@@ -150,14 +172,17 @@ Create `./k8s/vars.env`:
 ORCHESTRATOR_ROLE_ARN=arn:aws:iam::$BILLING_ACCOUNT_ID:role/Inventory-Orchestrator
 RUNNER_ROLE_ARN=arn:aws:iam::$SECURITY_ACCOUNT_ID:role/Inventory-Runner
 CRON_SCHEDULE=* * * * 0
+S3_BUCKET=inventory-output-goes-here
 ```
 
 Run `skaffold dev`.
 
-Trigger CronJob (`kubectl command`)
+Trigger CronJob and tails logs:
 
 ```
 kubectl -n inventory create job aws-inventory-orchestrator-manual --from=cronjob/aws-inventory-orchestrator
+
+# tail logs command to be documented
 ```
 
 ```
@@ -165,6 +190,8 @@ aws_recon -v -r global,eu-west-1,eu-central-1 --s3-bucket raras-inventory:eu-wes
 aws_recon -v -r global,eu-west-1,eu-central-1 | grep "not authorized"
 ```
 
-Example path:
+Example path (uploaded by Recon):
 
-s3://${BUCKET_NAME}/AWSRecon/${YEAR}/${MONTH}/${DAY}/${ACCOUNT_ID}_aws_recon_1649767394.json.gz
+```
+s3://${S3_BUCKET}/AWSRecon/${YEAR}/${MONTH}/${DAY}/${ACCOUNT_ID}_aws_recon_1649767394.json.gz
+```
