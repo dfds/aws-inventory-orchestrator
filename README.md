@@ -57,6 +57,11 @@ Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
 
 ## Sequence
 
+Diagrams needed:
+
+- Role/trust hierarchy [TD]
+- CronJob job spawning and role assumption [sequence]
+
 ```mermaid
 sequenceDiagram
     participant Orchestrator CronJob
