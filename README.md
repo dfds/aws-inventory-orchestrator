@@ -2,18 +2,16 @@
 
 ## To do
 
-- Create additional IAM role in billing account, with list-accounts rights to Organizations
-- Allow role to be assumed by aws-inventory-orchestrator k8s service account
-- Orchestrator program:
-  - Read list of org accounts (filter by INCLUDE_ACCOUNTS)
-  - Spawn separate Kubernetes jobs, passing inventory role ARN (in each account) to assume
-- Runner program:
-  - Using the inventory-orchestrator AWS IAM role, assume the inventory role in the specified role ARN
-  - Run something
 - Terraform:
   - Inventory-Orchestrator IAM role (in billing/master)
   - Inventory-Runner IAM role (in dfds-security)
-  - OIDC provider in billing/master
+  - Inventory S3 bucket (in dfds-security)
+- Kubernetes:
+  - Add common and different labels to orchestrator and runner jobs
+- Containers:
+  - Run as non-root
+    - Can specify in Dockerfile?
+    - CronJob and Job
 
 ### Inventory-Orchestrator and Runner trust relationship
 
@@ -39,7 +37,7 @@
 
 Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
 
-### Inventory-Runner and Runner policies
+### Inventory-Runner policies
 
 ```json
 {
@@ -50,6 +48,59 @@ Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
             "Resource": "arn:aws:iam::*:role/inventory"
+        }
+    ]
+}
+```
+
+### Inventory inline policy
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "access-analyzer:List*",
+                "acm:Describe*",
+                "apigateway:GET",
+                "application-autoscaling:Describe*",
+                "athena:Get*",
+                "autoscaling:Describe*",
+                "backup:List*",
+                "cloudtrail:List*",
+                "cloudwatch:Describe*",
+                "codebuild:List*",
+                "config:Describe*",
+                "dms:Describe*",
+                "ecr:Get*",
+                "eks:Describe*",
+                "eks:List*",
+                "elasticloadbalancing:Describe*",
+                "elasticmapreduce:Get*",
+                "glue:Get*",
+                "guardduty:Get*",
+                "guardduty:List*",
+                "iam:GenerateCredentialReport",
+                "iam:Get*",
+                "kafka:List*",
+                "kms:Describe*",
+                "kms:Get*",
+                "kms:List*",
+                "lightsail:Get*",
+                "redshift:Describe*",
+                "secretsmanager:List*",
+                "securityhub:Describe*",
+                "servicequotas:List*",
+                "shield:Describe*",
+                "SNS:Get*",
+                "ssm:Describe*",
+                "transfer:List*",
+                "xray:Get*"
+            ],
+            "Resource": "*"
         }
     ]
 }
@@ -98,9 +149,22 @@ Create `./k8s/vars.env`:
 ```env
 ORCHESTRATOR_ROLE_ARN=arn:aws:iam::$BILLING_ACCOUNT_ID:role/Inventory-Orchestrator
 RUNNER_ROLE_ARN=arn:aws:iam::$SECURITY_ACCOUNT_ID:role/Inventory-Runner
-CRON_SCHEDULE=* * * * *
+CRON_SCHEDULE=* * * * 0
 ```
 
-Suggested prod `CRON_SCHEDULE`: `* * * * 0`
-
 Run `skaffold dev`.
+
+Trigger CronJob (`kubectl command`)
+
+```
+kubectl -n inventory create job aws-inventory-orchestrator-manual --from=cronjob/aws-inventory-orchestrator
+```
+
+```
+aws_recon -v -r global,eu-west-1,eu-central-1 --s3-bucket raras-inventory:eu-west-1
+aws_recon -v -r global,eu-west-1,eu-central-1 | grep "not authorized"
+```
+
+Example path:
+
+s3://${BUCKET_NAME}/AWSRecon/${YEAR}/${MONTH}/${DAY}/${ACCOUNT_ID}_aws_recon_1649767394.json.gz

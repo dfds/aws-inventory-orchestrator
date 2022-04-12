@@ -12,6 +12,7 @@ import (
 func main() {
 
 	// display caller identity; useful during the debug phase
+	fmt.Println("Assumed role:")
 	callerIdentity := aws.GetCallerIdentity()
 	fmt.Println(callerIdentity)
 
@@ -23,9 +24,10 @@ func main() {
 		fmt.Println("%v\n", err)
 	} else {
 		for _, v := range acct {
-			fmt.Println(*v.Id)
 
 			roleArn := fmt.Sprintf("arn:aws:iam::%s:role/managed/inventory", *v.Id)
+
+			fmt.Printf("Creating job using IAM role \"%s\"\n", roleArn)
 
 			jobSpec := k8s.AssumeJobSpec{
 				JobName:            "aws-inventory-runner",
@@ -33,7 +35,7 @@ func main() {
 				ServiceAccountName: "aws-inventory-runner-sa",
 				VolumeName:         "aws-creds",
 				VolumePath:         "/aws",
-				InitName:           "auth",
+				InitName:           "assume",
 				InitImage:          k8s.GetPodImageName(),
 				InitCmd:            []string{"./app/runner"},
 				InitArgs:           []string{roleArn},

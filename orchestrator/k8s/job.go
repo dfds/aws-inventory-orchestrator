@@ -129,5 +129,5 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 	}
 
 	//print job details
-	log.Printf("Job \"%s\" created successfully\n", job.ObjectMeta.Name)
+	fmt.Printf("Job \"%s\" created successfully\n", job.ObjectMeta.Name)
 }
