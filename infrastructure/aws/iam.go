@@ -9,7 +9,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func CreateIAMRole(client *iam.Client, name string, description string, policy string, trustPolicy string, maxSessionDuration int32) {
+func InitAWS() {}
+
+func CreateIAMRole(client *iam.Client, name string, description string, trustPolicy string, policy string, maxSessionDuration int32) {
 
 	// define input for the role creation
 	var input *iam.CreateRoleInput = &iam.CreateRoleInput{

@@ -8,6 +8,7 @@ import (
 	"os"
 	"text/template"
 
+	// "infrastructure/aws"
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/sts"
@@ -67,7 +68,7 @@ func main() {
 
 	ctx := context.TODO()
 
-	cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithSharedConfigProfile("billing-admin"), config.WithRegion("eu-west-1"))
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile("billing-admin"), config.WithRegion("eu-west-1"))
 	if err != nil {
 		log.Fatalf("unable to load SDK config, %v", err)
 	}
@@ -91,7 +92,8 @@ func main() {
 	}
 
 	trustPolicy := buf.String()
-	fmt.Println("Trust Policy: ", trustPolicy)
+	_ = trustPolicy
+	// fmt.Println("Trust Policy: ", trustPolicy)
 
 	orchPolicyTemplate := template.Must(template.ParseFiles("./policies/orchestrator_policy.json"))
 	orchestratorPolicy := TrustTemplate{}
@@ -101,7 +103,11 @@ func main() {
 	}
 
 	policy := buf.String()
-	fmt.Println("Policy: ", policy)
+	_ = policy
+	// fmt.Println("Policy: ", policy)
+
+	// Create inventory orchestrator role
+	// aws.CreateIAMRole(client, inventoryOrchestratorRole, "", trustPolicy, policy, 3600)
 
 	// func CreateIAMRole(client *iam.Client, name string, description string, policy string, trustPolicy string, maxSessionDuration int32) {
 	// aws.CreateIAMRole(client, inventoryOrchestratorRole, "Inventory Orchestrator Role", )
