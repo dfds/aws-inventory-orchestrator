@@ -4,17 +4,17 @@
 
 ```bash
 saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile billing-admin --skip-prompt
-saml2aws login --role arn:aws:iam::${RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile security-cloudadmin --skip-prompt
+saml2aws login --role arn:aws:iam::${RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile inventory-runner-admin --skip-prompt
 ```
 
 ```powershell
 saml2aws login --role arn:aws:iam::${env:BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile billing-admin --skip-prompt
-saml2aws login --role arn:aws:iam::${env:RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile security-cloudadmin --skip-prompt
+saml2aws login --role arn:aws:iam::${env:RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile inventory-runner-admin --skip-prompt
 ```
 
 ## To do
 
-- Terraform:
+- Golang prereqs/infrastructure:
   - Inventory-Orchestrator IAM role (in billing/master)
   - Inventory-Runner IAM role (in dfds-security)
   - Inventory S3 bucket (in dfds-security)
