@@ -60,28 +60,26 @@ func S3CreateBucket(awsProfile string, name string) {
 		}
 	}
 
-	// This is broken, needs to happen
-	// See https://docs.aws.amazon.com/sdk-for-go/v1/developer-guide/s3-example-default-server-side-encryption.html (v1 though)
+	// Bucket encryption input
+	defEnc := &types.ServerSideEncryptionByDefault{SSEAlgorithm: ServerSideEncryptionAes256}
+	encRule := types.ServerSideEncryptionRule{
+		ApplyServerSideEncryptionByDefault: defEnc,
+	}
 
-	// // Bucket encryption input
-	// defEnc := &types.ServerSideEncryptionByDefault{SSEAlgorithm: ServerSideEncryptionAes256}
-	// encRule := &types.ServerSideEncryptionRule{
-	// 	ApplyServerSideEncryptionByDefault: defEnc,
-	// 	// BucketKeyEnabled: true,
-	// }
-	// encRules := []*types.ServerSideEncryptionRule{encRule}
-	// var encryptionInput *s3.PutBucketEncryptionInput = &s3.PutBucketEncryptionInput{
-	// 	Bucket: &name,
-	// 	ServerSideEncryptionConfiguration: &types.ServerSideEncryptionConfiguration{
-	// 		Rules: encRules,
-	// 	},
-	// }
+	encRules := []types.ServerSideEncryptionRule{encRule}
 
-	// // Encrypt bucket objects by default
-	// _, err = client.PutBucketEncryption(ctx, encryptionInput)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
+	var encryptionInput *s3.PutBucketEncryptionInput = &s3.PutBucketEncryptionInput{
+		Bucket: &name,
+		ServerSideEncryptionConfiguration: &types.ServerSideEncryptionConfiguration{
+			Rules: encRules,
+		},
+	}
+
+	// Encrypt bucket objects by default
+	_, err = client.PutBucketEncryption(ctx, encryptionInput)
+	if err != nil {
+		fmt.Println(err)
+	}
 
 	// Public access block input
 	var accessInput *s3.PutPublicAccessBlockInput = &s3.PutPublicAccessBlockInput{
