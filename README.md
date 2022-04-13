@@ -4,7 +4,12 @@
 
 ```bash
 saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile billing-admin --skip-prompt
-saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile security-cloudadmin --skip-prompt
+saml2aws login --role arn:aws:iam::${RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile security-cloudadmin --skip-prompt
+```
+
+```powershell
+saml2aws login --role arn:aws:iam::${env:BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile billing-admin --skip-prompt
+saml2aws login --role arn:aws:iam::${env:RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile security-cloudadmin --skip-prompt
 ```
 
 ## To do
