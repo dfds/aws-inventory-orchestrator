@@ -1,5 +1,12 @@
 # inventory-orchestrator
 
+## Deployment pre-requisites WIP
+
+```bash
+saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile billing-admin --skip-prompt
+saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile security-cloudadmin --skip-prompt
+```
+
 ## To do
 
 - Terraform:
