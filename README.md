@@ -48,6 +48,20 @@ saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --prof
 
 Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
 
+### Inventory-Orchestrator policies
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": "organizations:ListAccounts",
+            "Resource": "*"
+        }
+    ]
+}
+
 ### Inventory-Runner policies
 
 AssumeInventoryRole:
