@@ -1,4 +1,4 @@
-module infrastructure
+module github.com/dfds/aws-inventory-orchestrator/infrastructure
 
 go 1.17
 

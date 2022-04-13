@@ -4,26 +4,45 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
+	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
 )
 
-func InitAWS() {}
+func IamNewClient(profileName string) *iam.Client {
 
-func CreateIAMRole(client *iam.Client, name string, description string, trustPolicy string, policy string, maxSessionDuration int32) {
+	ctx := context.TODO()
+
+	cfg, err := config.LoadDefaultConfig(ctx, config.WithSharedConfigProfile(profileName), config.WithRegion("eu-west-1"))
+	if err != nil {
+		log.Fatalf("unable to load SDK config, %v", err)
+	}
+
+	client := iam.NewFromConfig(cfg)
+
+	return client
+
+}
+
+func IamCreateRole(awsProfile string, name string, description string, trustPolicy string, policy string, maxSessionDuration int32) {
+
+	ctx := context.TODO()
+
+	// create new client
+	client := IamNewClient(awsProfile)
 
 	// define input for the role creation
 	var input *iam.CreateRoleInput = &iam.CreateRoleInput{
-		MaxSessionDuration:       &maxSessionDuration,
+		RoleName:                 &name,
+		Description:              &description,
 		AssumeRolePolicyDocument: &trustPolicy,
-		// Path:                     &path,
-		RoleName:    &name,
-		Description: &description,
+		MaxSessionDuration:       &maxSessionDuration,
 	}
 
 	// try to create the required role
-	_, err := client.CreateRole(context.TODO(), input)
+	_, err := client.CreateRole(ctx, input)
 
 	// in the case of an error
 	if err != nil {
@@ -31,7 +50,7 @@ func CreateIAMRole(client *iam.Client, name string, description string, trustPol
 		if errors.As(err, &eae) {
 
 			// if the role already existed then at least ensure the AssumeRolePolicyDocument is updated
-			_, err = client.UpdateAssumeRolePolicy(context.TODO(), &iam.UpdateAssumeRolePolicyInput{PolicyDocument: &trustPolicy, RoleName: &name})
+			_, err = client.UpdateAssumeRolePolicy(ctx, &iam.UpdateAssumeRolePolicyInput{PolicyDocument: &trustPolicy, RoleName: &name})
 
 			// display errors if any occurred
 			if err != nil {
@@ -40,6 +59,27 @@ func CreateIAMRole(client *iam.Client, name string, description string, trustPol
 		} else {
 			fmt.Println("Error during creation of role.")
 		}
+	}
+
+	// Attach inline policies
+	IamPutRolePolicy(client, name, name, policy)
+
+}
+
+func IamPutRolePolicy(client *iam.Client, roleName string, policyName string, policy string) {
+
+	// define input for the policy put request
+	var input *iam.PutRolePolicyInput = &iam.PutRolePolicyInput{
+		RoleName:       &roleName,
+		PolicyName:     &policyName,
+		PolicyDocument: &policy,
+	}
+
+	// put inline policy
+	_, err := client.PutRolePolicy(context.TODO(), input)
+	if err != nil {
+		fmt.Println(" There was a problem whilst trying to create the inline policy.")
+		fmt.Printf(" The error was: %v\n", err)
 	}
 
 }

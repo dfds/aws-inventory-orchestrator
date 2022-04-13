@@ -4,12 +4,12 @@
         {
             "Effect": "Allow",
             "Principal": {
-                "Federated": "arn:aws:iam::$ACCOUNT_ID:oidc-provider/$OIDC"
+                "Federated": "arn:aws:iam::{{.AccountId}}:oidc-provider/{{.Oidc}}"
             },
             "Action": "sts:AssumeRoleWithWebIdentity",
             "Condition": {
                 "StringEquals": {
-                    "$OIDC:sub": "system:serviceaccount:inventory:$K8S_SA"
+                    "{{.Oidc}}:sub": "system:serviceaccount:inventory:{{.ServiceAccount}}"
                 }
             }
         }
