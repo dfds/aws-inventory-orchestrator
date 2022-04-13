@@ -5,20 +5,34 @@ resources:
   - rolebinding.yaml
 
 vars:
-  - name: ORCHESTRATOR_ROLE_ARN
+  - name: BILLING_ACCOUNT_ID
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.ORCHESTRATOR_ROLE_ARN
-  - name: RUNNER_ROLE_ARN
+      fieldpath: data.BILLING_ACCOUNT_ID
+  - name: INVENTORY_ORCHESTRATOR_ROLE
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.RUNNER_ROLE_ARN
+      fieldpath: data.INVENTORY_ORCHESTRATOR_ROLE
+  - name: RUNNER_ACCOUNT_ID
+    objref:
+      kind: ConfigMap
+      name: environment
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.RUNNER_ACCOUNT_ID
+  - name: INVENTORY_RUNNER_ROLE
+    objref:
+      kind: ConfigMap
+      name: environment
+      apiVersion: v1
+    fieldref:
+      fieldpath: data.INVENTORY_RUNNER_ROLE
   - name: CRON_SCHEDULE
     objref:
       kind: ConfigMap

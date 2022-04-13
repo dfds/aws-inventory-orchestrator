@@ -18,7 +18,7 @@ spec:
               name: orchestrator
               args:
                 - $(INCLUDE_ACCOUNTS)
-                - $(S3_BUCKET)
+                - $(BUCKET_NAME)
               env:
                 - name: MY_POD_NAME
                   valueFrom:
