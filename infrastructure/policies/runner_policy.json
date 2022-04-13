@@ -1,0 +1,17 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "UploadInventory",
+            "Effect": "Allow",
+            "Action": "s3:PutObject",
+            "Resource": "arn:aws:s3:::{{.BucketName}}/*"
+        },
+        {
+            "Sid": "AssumeRole",
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::*:role/{{.InventoryRole}}"
+        }
+    ]
+}

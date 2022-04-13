@@ -1,0 +1,17 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "Federated": "arn:aws:iam::$ACCOUNT_ID:oidc-provider/$OIDC"
+            },
+            "Action": "sts:AssumeRoleWithWebIdentity",
+            "Condition": {
+                "StringEquals": {
+                    "$OIDC:sub": "system:serviceaccount:inventory:$K8S_SA"
+                }
+            }
+        }
+    ]
+}
