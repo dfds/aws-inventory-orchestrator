@@ -15,11 +15,10 @@ saml2aws login --role arn:aws:iam::${env:RUNNER_ACCOUNT_ID}:role/CloudAdmin --pr
 ## To do
 
 - Golang prereqs/infrastructure:
-  - Inventory-Orchestrator IAM role (in billing/master)
-  - Inventory-Runner IAM role (in dfds-security)
-  - Inventory S3 bucket (in dfds-security)
+  - Encrypt S3 bucket (in dfds-security)
 - Kubernetes:
   - Add common and different labels to orchestrator and runner jobs
+- Pipeline stuff
 - Containers:
   - Run as non-root
     - Can specify in Dockerfile?
