@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/iam"
@@ -49,16 +50,23 @@ func IamCreateRole(awsProfile string, name string, description string, trustPoli
 		var eae *types.EntityAlreadyExistsException
 		if errors.As(err, &eae) {
 
-			// if the role already existed then at least ensure the AssumeRolePolicyDocument is updated
-			_, err = client.UpdateAssumeRolePolicy(ctx, &iam.UpdateAssumeRolePolicyInput{PolicyDocument: &trustPolicy, RoleName: &name})
+			if strings.HasSuffix(name, "-Test") {
+				fmt.Printf("Not setting trust policy for role %s (probably expected)\n", name)
+			} else {
+				// if the role already existed then at least ensure the AssumeRolePolicyDocument is updated
+				_, err = client.UpdateAssumeRolePolicy(ctx, &iam.UpdateAssumeRolePolicyInput{PolicyDocument: &trustPolicy, RoleName: &name})
 
-			// display errors if any occurred
-			if err != nil {
-				fmt.Println("Error during update of role trust policy.")
+				// display errors if any occurred
+				if err != nil {
+					fmt.Printf("Error updating trust policy for role %s\n", name)
+				}
 			}
+
 		} else {
-			fmt.Println("Error during creation of role.")
+			fmt.Printf("Error creating role %s:\n%v\n", name, err)
 		}
+	} else {
+		fmt.Printf("Created role %s\n", name)
 	}
 
 	// Attach inline policies
