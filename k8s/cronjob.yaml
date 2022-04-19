@@ -3,6 +3,10 @@ kind: CronJob
 metadata:
   name: aws-inventory-orchestrator
   namespace: inventory
+  labels:
+    app: inventory
+    component: orchestrator
+    cloud: aws
 spec:
   schedule: $(CRON_SCHEDULE)
   failedJobsHistoryLimit: 1
@@ -10,6 +14,11 @@ spec:
   jobTemplate:
     spec:
       template:
+        metadata:
+          labels:
+            app: inventory
+            component: orchestrator
+            cloud: aws
         spec:
           serviceAccountName: aws-inventory-orchestrator-sa
           containers:

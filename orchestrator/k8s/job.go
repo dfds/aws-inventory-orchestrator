@@ -69,6 +69,13 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 		},
 		Spec: batchv1.JobSpec{
 			Template: v1.PodTemplateSpec{
+				ObjectMeta: metav1.ObjectMeta{
+					Labels: map[string]string{
+						"app":       "inventory",
+						"component": "runner",
+						"cloud":     "aws",
+					},
+				},
 				Spec: v1.PodSpec{
 					Volumes: []v1.Volume{
 						{
