@@ -47,13 +47,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.INCLUDE_ACCOUNTS
-  - name: S3_BUCKET
+  - name: BUCKET_NAME
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.S3_BUCKET
+      fieldpath: data.BUCKET_NAME
 
 configMapGenerator:
   - name: environment
