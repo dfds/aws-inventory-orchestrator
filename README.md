@@ -1,33 +1,4 @@
-# inventory-orchestrator
-
-## Deployment pre-requisites WIP
-
-```bash
-saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile billing-admin --skip-prompt
-saml2aws login --role arn:aws:iam::${RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile inventory-runner-admin --skip-prompt
-```
-
-```powershell
-saml2aws login --role arn:aws:iam::${env:BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile billing-admin --skip-prompt
-saml2aws login --role arn:aws:iam::${env:RUNNER_ACCOUNT_ID}:role/CloudAdmin --profile inventory-runner-admin --skip-prompt
-```
-
-## To do
-
-- Document every step to set this up (start by tearing all down)
-  - Built-in infrastructure command
-  - Roles/permissions
-  - etc.
-- Kubernetes:
-  - Add common and different labels to orchestrator and runner jobs
-- Containers:
-  - Run as non-root
-    - Can specify in Dockerfile?
-    - CronJob and Job
-- Documentation diagrams
-- Replace "upload" container with Go program
-  - Gunzip before uploading? (~2+ MB x # accounts?)
-- Test with multiple accounts
+# AWS Inventory Orchestrator
 
 ### Inventory-Orchestrator and Runner trust relationship
 
