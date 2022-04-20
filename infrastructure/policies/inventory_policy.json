@@ -1,0 +1,48 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "VisualEditor0",
+            "Effect": "Allow",
+            "Action": [
+                "iam:GenerateCredentialReport",
+                "autoscaling:Describe*",
+                "kms:List*",
+                "acm:Describe*",
+                "kms:Get*",
+                "SNS:Get*",
+                "guardduty:List*",
+                "cloudwatch:Describe*",
+                "config:Describe*",
+                "codebuild:List*",
+                "iam:Get*",
+                "backup:List*",
+                "lightsail:Get*",
+                "elasticmapreduce:Get*",
+                "securityhub:Describe*",
+                "shield:Describe*",
+                "elasticloadbalancing:Describe*",
+                "eks:Describe*",
+                "apigateway:GET",
+                "eks:List*",
+                "xray:Get*",
+                "cloudtrail:List*",
+                "ecr:Get*",
+                "application-autoscaling:Describe*",
+                "dms:Describe*",
+                "kms:Describe*",
+                "guardduty:Get*",
+                "access-analyzer:List*",
+                "athena:Get*",
+                "servicequotas:List*",
+                "glue:Get*",
+                "redshift:Describe*",
+                "ssm:Describe*",
+                "transfer:List*",
+                "secretsmanager:List*",
+                "kafka:List*"
+            ],
+            "Resource": "*"
+        }
+    ]
+}

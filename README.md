@@ -1,130 +1,5 @@
 # AWS Inventory Orchestrator
 
-### Inventory-Orchestrator and Runner trust relationship
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Principal": {
-                "Federated": "arn:aws:iam::$ACCOUNT_ID:oidc-provider/$OIDC"
-            },
-            "Action": "sts:AssumeRoleWithWebIdentity",
-            "Condition": {
-                "StringEquals": {
-                    "$OIDC:sub": "system:serviceaccount:inventory:$K8S_SA"
-                }
-            }
-        }
-    ]
-}
-```
-
-Replace $OIDC, $ACCOUNT_ID, $K8S_SA (billing and security respectively).
-
-### Inventory-Orchestrator policies
-
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": "organizations:ListAccounts",
-            "Resource": "*"
-        }
-    ]
-}
-
-### Inventory-Runner policies
-
-AssumeInventoryRole:
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": "sts:AssumeRole",
-            "Resource": "arn:aws:iam::*:role/inventory"
-        }
-    ]
-}
-```
-
-UploadInventoryOutput
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": "s3:PutObject",
-            "Resource": "arn:aws:s3:::${BUCKET}/*"
-        }
-    ]
-}
-```
-
-### Inventory inline policy
-
-```json
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "VisualEditor0",
-            "Effect": "Allow",
-            "Action": [
-                "access-analyzer:List*",
-                "acm:Describe*",
-                "apigateway:GET",
-                "application-autoscaling:Describe*",
-                "athena:Get*",
-                "autoscaling:Describe*",
-                "backup:List*",
-                "cloudtrail:List*",
-                "cloudwatch:Describe*",
-                "codebuild:List*",
-                "config:Describe*",
-                "dms:Describe*",
-                "ecr:Get*",
-                "eks:Describe*",
-                "eks:List*",
-                "elasticloadbalancing:Describe*",
-                "elasticmapreduce:Get*",
-                "glue:Get*",
-                "guardduty:Get*",
-                "guardduty:List*",
-                "iam:GenerateCredentialReport",
-                "iam:Get*",
-                "kafka:List*",
-                "kms:Describe*",
-                "kms:Get*",
-                "kms:List*",
-                "lightsail:Get*",
-                "redshift:Describe*",
-                "secretsmanager:List*",
-                "securityhub:Describe*",
-                "servicequotas:List*",
-                "shield:Describe*",
-                "SNS:Get*",
-                "ssm:Describe*",
-                "transfer:List*",
-                "xray:Get*"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-```
-
 ## Sequence
 
 Diagrams needed:
@@ -158,6 +33,29 @@ graph TD
     C -->|Three| F[fa:fa-car Car]
 ```
 
+## Inventory IAM roles
+
+The AWS inventory orchestration involves three IAM roles:
+
+| Role name                | Account                           | Can be assumed by                  | Permission summary                           |
+| ------------------------ | --------------------------------- | ---------------------------------- | -------------------------------------------- |
+| `Inventory-Orchestrator` | *Billing* (aka. Master)           | *Orchestrator* k8s service account | Get all account ID's from AWS Organization   |
+| `Inventory-Runner`       | *Security*                        | *Runner* k8s service account       | Upload inventory report to central S3 bucket |
+| `inventory`              | All accounts where inventory runs | `Inventory-Runner` IAM role        | `Get*`/`List*`/`Describe*` everything        |
+
+You can use the [ce-cli](https://github.com/dfds/ce-cli) tool to deploy the `inventory` IAM role into all AWS accounts in the AWS Organization.
+
+Regardless of how the role is deployed, the following you need to apply the properties and policies to the role specified in the following files.
+
+All of them reside under `/infrastructure/policies/`.
+
+| File                        | Description                                                                          |
+| --------------------------- | ------------------------------------------------------------------------------------ |
+| `inventory_policy.json`     | The inline permission policy document to attach                                      |
+| `inventory_properties.json` | Various properties for the role, including any managed permission policies to attach |
+| `inventory_trust.json`      | The role trust policy document (substitute `{{.SecurityAccountId}}`)                 |
+
+If using the `ce-cli` tool, these files need to be uploaded to the path described in the [Backend bucket structure](https://github.com/dfds/ce-cli#backend-bucket-structure) section.
 
 ## Development
 

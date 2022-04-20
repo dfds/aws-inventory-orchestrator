@@ -1,0 +1,8 @@
+{
+    "description": "Role with various read-only permission to run inventory on AWS accounts.",
+    "sessionDuration": 28800,
+    "path": "/managed/",
+    "managedPolicies": [
+        "arn:aws:iam::aws:policy/job-function/ViewOnlyAccess"
+    ]
+}
