@@ -26,6 +26,7 @@ func main() {
 	envMap := util.MapEnvs([]string{"BILLING_ACCOUNT_ID", "BUCKET_NAME", "INVENTORY_ROLE", "OIDC_PROVIDER", "RUNNER_ACCOUNT_ID"})
 
 	emptyTemplateTokens := util.TemplateTokens{}
+	fallbackTemplateTokens := util.TemplateTokens{AccountId: envMap["RUNNER_ACCOUNT_ID"]}
 
 	/* ORCHESTRATOR ROLES */
 
@@ -37,7 +38,7 @@ func main() {
 
 	// Create TEST inventory orchestrator role (with no trust policy, as it will be managed manually)
 	orchRoleNameTest := orchRole + "-Test"
-	orchTrustDocTest := util.ParseTemplateFile("./policies/fallback_trust.json", emptyTemplateTokens)
+	orchTrustDocTest := util.ParseTemplateFile("./policies/fallback_trust.json", fallbackTemplateTokens)
 	aws.IamCreateRole(billingAwsProfile, orchRoleNameTest, "", orchTrustDocTest, orchPolicyDoc, 3600)
 
 	/* RUNNER ROLES */
@@ -51,7 +52,7 @@ func main() {
 
 	// Create TEST inventory runner role (with no trust policy, as it will be managed manually)
 	runnerRoleNameTest := runnerRole + "-Test"
-	runnerTrustDocTest := util.ParseTemplateFile("./policies/fallback_trust.json", emptyTemplateTokens)
+	runnerTrustDocTest := util.ParseTemplateFile("./policies/fallback_trust.json", fallbackTemplateTokens)
 	aws.IamCreateRole(runnerAwsProfile, runnerRoleNameTest, "", runnerTrustDocTest, runnerPolicyDoc, 3600)
 
 	// Create inventory runner role
