@@ -37,13 +37,13 @@ graph TD
 
 The AWS inventory orchestration involves five different IAM roles:
 
-| Role name                     | Account                           | Can be assumed by                                       | Permission summary                           |
-| ----------------------------- | --------------------------------- | ------------------------------------------------------- | -------------------------------------------- |
-| `Inventory-Orchestrator`      | *Billing* (aka. Master)           | *Orchestrator* k8s service account in *Prod*            | Get all account ID's from AWS Organization   |
-| `Inventory-Orchestrator-Test` | *Billing* (aka. Master)           | *Orchestrator* k8s service accounts in test clusters    | Get all account ID's from AWS Organization   |
-| `Inventory-Runner`            | *Security*                        | *Runner* k8s service account in *Prod*                  | Upload inventory report to central S3 bucket |
-| `Inventory-Runner-Test`       | *Security*                        | *Runner* k8s service account in test clusters           | Upload inventory report to central S3 bucket |
-| `inventory`                   | All accounts where inventory runs | `Inventory-Runner` and `Inventory-Runner-Test` IAM role | `Get*`/`List*`/`Describe*` everything        |
+| Role name                     | Account                           | Can be assumed by                                                  | Permission summary                           |
+| ----------------------------- | --------------------------------- | ------------------------------------------------------------------ | -------------------------------------------- |
+| `Inventory-Orchestrator`      | *Billing* (aka. Master)           | *Orchestrator* k8s service account<br>in *Prod* using OIDC         | Get all account ID's from AWS Organization   |
+| `Inventory-Orchestrator-Test` | *Billing* (aka. Master)           | *Orchestrator* k8s service accounts<br>in test clusters using OIDC | Get all account ID's from AWS Organization   |
+| `Inventory-Runner`            | *Security*                        | *Runner* k8s service account in *Prod*                             | Upload inventory report to central S3 bucket |
+| `Inventory-Runner-Test`       | *Security*                        | *Runner* k8s service account in test clusters                      | Upload inventory report to central S3 bucket |
+| `inventory`                   | All accounts where inventory runs | `Inventory-Runner` and<br>`Inventory-Runner-Test` IAM role         | `Get*`/`List*`/`Describe*` everything        |
 
 You can use the [ce-cli](https://github.com/dfds/ce-cli) tool to deploy the `inventory` IAM role into all AWS accounts in the AWS Organization.
 
@@ -58,6 +58,37 @@ All of them reside under `/infrastructure/policies/`.
 | `inventory_trust.json`      | The role trust policy document (substitute `{{.SecurityAccountId}}`)                 |
 
 If using the `ce-cli` tool, these files need to be uploaded to the path described in the [Backend bucket structure](https://github.com/dfds/ce-cli#backend-bucket-structure) section.
+
+### Inventory-Orchestrator-Test trust relationships
+
+```mermaid
+graph TD
+    A[OIDC provider in *Prod*] --> B("aws-inventory-orchestrator-sa" K8S SA)
+    B --> C["Inventory-Orchestrator" AWS IAM role ]
+    C -->|One| D[Laptop]
+    C -->|Two| E[iPhone]
+    C -->|Three| F[fa:fa-car Car]
+```
+
+```mermaid
+graph TD
+    A(K8S service account in test cluster A) --> B(OIDC provider for test cluster A)
+    B -->|Assume| E(Inventory-Orchestrator-Test IAM role)
+
+    C(K8S service account in test cluster B) --> D("Orchestrator" K8S service account/OIDC for test cluster B)
+    D --> E
+
+```
+
+---
+
+```mermaid
+graph TD
+
+    E(Inventory-Orchestrator-Test IAM role) -->|Trust| F("Orchestrator" K8S service account/OIDC for test cluster A)
+    E -->|Trust| G("Orchestrator" K8S service account/OIDC for test cluster B)
+
+```
 
 ## Development
 
