@@ -35,13 +35,15 @@ graph TD
 
 ## Inventory IAM roles
 
-The AWS inventory orchestration involves three IAM roles:
+The AWS inventory orchestration involves five different IAM roles:
 
-| Role name                | Account                           | Can be assumed by                  | Permission summary                           |
-| ------------------------ | --------------------------------- | ---------------------------------- | -------------------------------------------- |
-| `Inventory-Orchestrator` | *Billing* (aka. Master)           | *Orchestrator* k8s service account | Get all account ID's from AWS Organization   |
-| `Inventory-Runner`       | *Security*                        | *Runner* k8s service account       | Upload inventory report to central S3 bucket |
-| `inventory`              | All accounts where inventory runs | `Inventory-Runner` IAM role        | `Get*`/`List*`/`Describe*` everything        |
+| Role name                     | Account                           | Can be assumed by                                       | Permission summary                           |
+| ----------------------------- | --------------------------------- | ------------------------------------------------------- | -------------------------------------------- |
+| `Inventory-Orchestrator`      | *Billing* (aka. Master)           | *Orchestrator* k8s service account in *Prod*            | Get all account ID's from AWS Organization   |
+| `Inventory-Orchestrator-Test` | *Billing* (aka. Master)           | *Orchestrator* k8s service accounts in test clusters    | Get all account ID's from AWS Organization   |
+| `Inventory-Runner`            | *Security*                        | *Runner* k8s service account in *Prod*                  | Upload inventory report to central S3 bucket |
+| `Inventory-Runner-Test`       | *Security*                        | *Runner* k8s service account in test clusters           | Upload inventory report to central S3 bucket |
+| `inventory`                   | All accounts where inventory runs | `Inventory-Runner` and `Inventory-Runner-Test` IAM role | `Get*`/`List*`/`Describe*` everything        |
 
 You can use the [ce-cli](https://github.com/dfds/ce-cli) tool to deploy the `inventory` IAM role into all AWS accounts in the AWS Organization.
 
