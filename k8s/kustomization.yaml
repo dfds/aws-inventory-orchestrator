@@ -12,27 +12,27 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.BILLING_ACCOUNT_ID
-  - name: INVENTORY_ORCHESTRATOR_ROLE
+  - name: ORCHESTRATOR_ROLE
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.INVENTORY_ORCHESTRATOR_ROLE
-  - name: RUNNER_ACCOUNT_ID
+      fieldpath: data.ORCHESTRATOR_ROLE
+  - name: SECURITY_ACCOUNT_ID
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.RUNNER_ACCOUNT_ID
-  - name: INVENTORY_RUNNER_ROLE
+      fieldpath: data.SECURITY_ACCOUNT_ID
+  - name: RUNNER_ROLE
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.INVENTORY_RUNNER_ROLE
+      fieldpath: data.RUNNER_ROLE
   - name: CRON_SCHEDULE
     objref:
       kind: ConfigMap
@@ -47,13 +47,13 @@ vars:
       apiVersion: v1
     fieldref:
       fieldpath: data.INCLUDE_ACCOUNTS
-  - name: INVENTORY_BUCKET_NAME
+  - name: BUCKET_NAME
     objref:
       kind: ConfigMap
       name: environment
       apiVersion: v1
     fieldref:
-      fieldpath: data.INVENTORY_BUCKET_NAME
+      fieldpath: data.BUCKET_NAME
 
 configMapGenerator:
   - name: environment
