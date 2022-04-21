@@ -70,7 +70,7 @@ func IamCreateRole(awsProfile string, name string, description string, trustPoli
 	}
 
 	// Attach inline policies
-	IamPutRolePolicy(client, name, "ListOrgAccounts", policy)
+	IamPutRolePolicy(client, name, name, policy)
 
 }
 
