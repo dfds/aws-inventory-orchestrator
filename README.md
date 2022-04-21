@@ -1,5 +1,71 @@
 # AWS Inventory Orchestrator
 
+## Deploying prerequisites
+
+Most of the required IAM roles and S3 buckets are provisioned with the `infrastructure` tool.
+
+Maybe this should have been Terraform'ed, but we didn't want to deal with state. Considering how the `infrastructure` tool has evolved, maybe we should have.
+
+There's currently a hard dependency on the [`ce-cli`][ce-cli], which is used to deploy the `inventory` IAM role across all AWS accounts in the Organization.
+
+Be sure to set the variables before running.
+
+Example usage:
+
+**Bash**
+
+```bash
+# Variables
+BILLING_ACCOUNT_ID=""
+SECURITY_ACCOUNT_ID=""
+CLI_BUCKET_NAME=""
+INVENTORY_BUCKET_NAME=""
+OIDC_PROVIDER_PROD=""
+
+# Defaults
+BILLING_AWS_PROFILE="billing-admin"
+SECURITY_AWS_PROFILE="security-admin"
+INVENTORY_ROLE="inventory"
+ORCHESTRATOR_ROLE_DEPLOY="Inventory-Orchestrator"
+RUNNER_ROLE_DEPLOY="Inventory-Runner"
+
+# Login with SAML to the Billing and Security account
+saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile ${BILLING_AWS_PROFILE} --skip-prompt
+saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile ${SECURITY_AWS_PROFILE} --skip-prompt
+
+# Provision infrastructure
+./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE}" --runner-role "${RUNNER_ROLE}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
+```
+
+**PowerShell**
+
+```powershell
+# Variables
+$BILLING_ACCOUNT_ID=""
+$SECURITY_ACCOUNT_ID=""
+$CLI_BUCKET_NAME=""
+$INVENTORY_BUCKET_NAME=""
+$OIDC_PROVIDER_PROD=""
+
+# Defaults
+$BILLING_AWS_PROFILE="billing-admin"
+$SECURITY_AWS_PROFILE="security-admin"
+$INVENTORY_ROLE="inventory"
+$ORCHESTRATOR_ROLE_DEPLOY="Inventory-Orchestrator"
+$RUNNER_ROLE_DEPLOY="Inventory-Runner"
+
+# Login with SAML to the Billing and Security account
+saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile ${BILLING_AWS_PROFILE} --skip-prompt
+saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile ${SECURITY_AWS_PROFILE} --skip-prompt
+
+# Provision infrastructure
+./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE}" --runner-role "${RUNNER_ROLE}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
+```
+
+Once infrastructure has been provisioned, deploy the `inventory` IAM role using the `ce-cli` tool, to all accounts to be inventoried.
+
+Re-run the `infrastructure` tool at any time, if any of the policies, or any of the supplied input arguments, have changed.
+
 ## Sequence
 
 Diagrams needed:
@@ -45,19 +111,15 @@ The AWS inventory orchestration involves five different IAM roles:
 | `Inventory-Runner-Test`       | *Security*                        | *Runner* k8s service account in test clusters                      | Upload inventory report to central S3 bucket |
 | `inventory`                   | All accounts where inventory runs | `Inventory-Runner` and<br>`Inventory-Runner-Test` IAM role         | `Get*`/`List*`/`Describe*` everything        |
 
-You can use the [ce-cli](https://github.com/dfds/ce-cli) tool to deploy the `inventory` IAM role into all AWS accounts in the AWS Organization.
+We currently assume that the [`ce-cli`][ce-cli] tool is used to deploy the `inventory` IAM role into all AWS accounts in the AWS Organization. The `infrastructure` tool will upload the required files to the S3 bucket used by the `ce-cli` tool to their proper location.
 
-Regardless of how the role is deployed, the following you need to apply the properties and policies to the role specified in the following files.
-
-All of them reside under `/infrastructure/policies/`.
+The following files under `/infrastructure/policies/` are used to configure the `inventory` IAM role:
 
 | File                        | Description                                                                          |
 | --------------------------- | ------------------------------------------------------------------------------------ |
 | `inventory_policy.json`     | The inline permission policy document to attach                                      |
 | `inventory_properties.json` | Various properties for the role, including any managed permission policies to attach |
-| `inventory_trust.json`      | The role trust policy document (substitute `{{.SecurityAccountId}}`)                 |
-
-If using the `ce-cli` tool, these files need to be uploaded to the path described in the [Backend bucket structure](https://github.com/dfds/ce-cli#backend-bucket-structure) section.
+| `inventory_trust.json`      | The role trust policy document                                                       |
 
 ### Inventory-Orchestrator-Test trust relationships
 
@@ -123,3 +185,6 @@ Example path (uploaded by Recon):
 ```
 s3://${S3_BUCKET}/AWSRecon/${YEAR}/${MONTH}/${DAY}/${ACCOUNT_ID}_aws_recon_1649767394.json.gz
 ```
+
+---
+[ce-cli]: <https://github.com/dfds/ce-cli>
