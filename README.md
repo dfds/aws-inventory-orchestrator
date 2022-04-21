@@ -34,7 +34,7 @@ saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profi
 saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile ${SECURITY_AWS_PROFILE} --skip-prompt
 
 # Provision infrastructure
-./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE}" --runner-role "${RUNNER_ROLE}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
+./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE_DEPLOY}" --runner-role "${RUNNER_ROLE_DEPLOY}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
 ```
 
 **PowerShell**
@@ -59,7 +59,7 @@ saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profi
 saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile ${SECURITY_AWS_PROFILE} --skip-prompt
 
 # Provision infrastructure
-./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE}" --runner-role "${RUNNER_ROLE}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
+./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE_DEPLOY}" --runner-role "${RUNNER_ROLE_DEPLOY}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
 ```
 
 Once infrastructure has been provisioned, deploy the `inventory` IAM role using the `ce-cli` tool, to all accounts to be inventoried.
