@@ -11,7 +11,7 @@
             "Sid": "AssumeRole",
             "Effect": "Allow",
             "Action": "sts:AssumeRole",
-            "Resource": "arn:aws:iam::*:role/{{.InventoryRole}}"
+            "Resource": "arn:aws:iam::*:role/managed/{{.InventoryRole}}"
         }
     ]
 }
