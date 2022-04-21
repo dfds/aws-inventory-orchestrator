@@ -156,6 +156,14 @@ graph TD
 
 *Work in progress.*
 
+Deploy OIDC provider for your sandbox cluster in both Billing and Security account (use [`ce-cli`][ce-cli])
+
+```bash
+aws --include-account-ids "BillingAccountId,SecurityAccountId" create-oidc-provider --url "https://oidc.eks.eu-west-1.amazonaws.com/id/SOMETHING" --cluster-name "Rasmus-Sandbox"
+```
+
+Set env vars
+
 Create `./k8s/vars.env`:
 
 ```env
