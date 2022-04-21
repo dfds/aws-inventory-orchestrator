@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"log"
 
 	"github.com/dfds/aws-inventory-orchestrator/infrastructure/aws"
@@ -26,39 +25,36 @@ func main() {
 	flag.Parse()
 
 	// Validate all arguments were passed
-	if *billingAwsProfile == "billing-aws-profile" {
-		log.Fatal("Required flag \"billingAwsProfile\" not set or empty.")
+	if *billingAwsProfile == "" {
+		log.Fatal("Required flag \"billing-aws-profile\" not set or empty.")
 	}
-	if *securityAwsProfile == "security-aws-profile" {
-		log.Fatal("Required flag \"securityAwsProfile\" not set or empty.")
+	if *securityAwsProfile == "" {
+		log.Fatal("Required flag \"security-aws-profile\" not set or empty.")
 	}
-	if *cliBucketName == "cli-bucket-name" {
-		log.Fatal("Required flag \"cliBucketName\" not set or empty.")
+	if *cliBucketName == "" {
+		log.Fatal("Required flag \"cli-bucket-name\" not set or empty.")
 	}
-	if *inventoryBucketName == "inventory-bucket-name" {
-		log.Fatal("Required flag \"inventoryBucketName\" not set or empty.")
+	if *inventoryBucketName == "" {
+		log.Fatal("Required flag \"inventory-bucket-name\" not set or empty.")
 	}
-	if *inventoryRole == "inventory-role" {
-		log.Fatal("Required flag \"inventoryRole\" not set or empty.")
+	if *inventoryRole == "" {
+		log.Fatal("Required flag \"inventory-role\" not set or empty.")
 	}
-	if *orchRole == "orchestrator-role" {
-		log.Fatal("Required flag \"billingAwsProfile\" not set or empty.")
+	if *orchRole == "" {
+		log.Fatal("Required flag \"orchestrator-role\" not set or empty.")
 	}
-	if *runnerRole == "runner-role" {
-		log.Fatal("Required flag \"billingAwsProfile\" not set or empty.")
+	if *runnerRole == "" {
+		log.Fatal("Required flag \"runner-role\" not set or empty.")
 	}
-	if *oidcProvider == "oidc-provider-prod" {
-		log.Fatal("Required flag \"billingAwsProfile\" not set or empty.")
+	if *oidcProvider == "" {
+		log.Fatal("Required flag \"oidc-provider-prod\" not set or empty.")
 	}
 
 	// Get account IDs
 	billingAccountId := aws.GetCallerIdentity(*billingAwsProfile)
 	securityAccountId := aws.GetCallerIdentity(*securityAwsProfile)
 
-	fmt.Println(billingAccountId)
-	fmt.Println(securityAccountId)
-	log.Fatal()
-
+	// Define template tokens for replacement
 	emptyTemplateTokens := util.TemplateTokens{}
 	fallbackTemplateTokens := util.TemplateTokens{AccountId: securityAccountId}
 

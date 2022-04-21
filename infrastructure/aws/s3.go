@@ -126,7 +126,7 @@ func UploadStringToS3File(awsProfile string, bucket string, key string, content 
 		Body:   body,
 	}
 
-	fmt.Printf("Uploading file %s to the bucket %s.\n", key, bucket)
+	fmt.Printf("Uploading file %s to the bucket %s\n", key, bucket)
 	_, err := PutFile(context.TODO(), client, input)
 	if err != nil {
 		fmt.Println("Got error uploading file:")
