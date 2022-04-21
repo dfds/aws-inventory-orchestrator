@@ -27,7 +27,7 @@ spec:
               name: orchestrator
               args:
                 - $(INCLUDE_ACCOUNTS)
-                - $(BUCKET_NAME)
+                - $(INVENTORY_BUCKET_NAME)
               env:
                 - name: MY_POD_NAME
                   valueFrom:

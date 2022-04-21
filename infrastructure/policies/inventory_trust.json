@@ -5,8 +5,8 @@
             "Effect": "Allow",
             "Principal": {
                 "AWS": [
-                    "arn:aws:iam::{{.SecurityAccountId}}:role/Inventory-Runner",
-                    "arn:aws:iam::{{.SecurityAccountId}}:role/Inventory-Runner-Test"
+                    "arn:aws:iam::{{.AccountId}}:role/Inventory-Runner",
+                    "arn:aws:iam::{{.AccountId}}:role/Inventory-Runner-Test"
                 ]
             },
             "Action": "sts:AssumeRole",

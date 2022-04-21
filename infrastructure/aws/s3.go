@@ -5,11 +5,18 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 )
+
+type S3PutObjectAPI interface {
+	PutObject(ctx context.Context,
+		params *s3.PutObjectInput,
+		optFns ...func(*s3.Options)) (*s3.PutObjectOutput, error)
+}
 
 const (
 	BucketCannedACLPrivate     types.BucketCannedACL          = "private"
@@ -31,6 +38,10 @@ func S3NewClient(profileName string) *s3.Client {
 
 	return client
 
+}
+
+func PutFile(c context.Context, api S3PutObjectAPI, input *s3.PutObjectInput) (*s3.PutObjectOutput, error) {
+	return api.PutObject(c, input)
 }
 
 func S3CreateBucket(awsProfile string, name string) {
@@ -98,4 +109,28 @@ func S3CreateBucket(awsProfile string, name string) {
 		fmt.Println(err)
 	}
 
+}
+
+func UploadStringToS3File(awsProfile string, bucket string, key string, content string) {
+
+	ctx := context.TODO()
+	_ = ctx
+
+	client := S3NewClient(awsProfile)
+
+	body := strings.NewReader(content)
+
+	input := &s3.PutObjectInput{
+		Bucket: &bucket,
+		Key:    &key,
+		Body:   body,
+	}
+
+	fmt.Printf("Uploading file %s to the bucket %s.\n", key, bucket)
+	_, err := PutFile(context.TODO(), client, input)
+	if err != nil {
+		fmt.Println("Got error uploading file:")
+		fmt.Println(err)
+		return
+	}
 }
