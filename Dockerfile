@@ -33,6 +33,26 @@ RUN go build -o bin/runner
 
 # Copy binaries and run
 FROM alpine:latest
-COPY --from=builder /src/orchestrator/bin /app
-COPY --from=builder /src/runner/bin /app
-ENTRYPOINT ["/app/orchestrator"]
+
+# Define variables
+ARG USER=appuser
+ENV HOME /home/$USER
+
+# Copy binaries into the image
+COPY --from=builder /src/orchestrator/bin $HOME/app
+COPY --from=builder /src/runner/bin $HOME/app
+
+# install sudo as root
+RUN apk add --update sudo
+
+# add new user
+RUN adduser -D $USER \
+        && echo "$USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$USER \
+        && chmod 0440 /etc/sudoers.d/$USER
+
+# set user and working directory
+USER $USER
+WORKDIR $HOME
+
+# By default execute the orchestrator
+ENTRYPOINT ["./app/orchestrator"]
