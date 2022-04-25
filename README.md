@@ -66,37 +66,52 @@ Once infrastructure has been provisioned, deploy the `inventory` IAM role using 
 
 Re-run the `infrastructure` tool at any time, if any of the policies, or any of the supplied input arguments, have changed.
 
-## Sequence
+## Sequence diagrams
 
-Diagrams needed:
+### Orchestrator sequence
 
-- Role/trust hierarchy [TD]
-- CronJob job spawning and role assumption [sequence]
+The "Orchestrator" Kubernetes *CronJob* spawns a new Kubernetes *Job* according to the defined schedule, or when triggered manually.
 
 ```mermaid
 sequenceDiagram
-    participant Orchestrator CronJob
-    participant Orchestrator IAM role
-    participant Runner Job
+    autonumber
+    participant Job as K8S "Orchestrator" Job
+    participant STS as AWS STS
+    participant Org as AWS Organizations
+    participant K8S as Kubernetes API
 
-    CronJob ->> AWS STS: Assume "Inventory-Orchestrator" IAM role
-    Alice ->> Bob: Hello Bob, how are you?
-    Bob-->>John: How about you John?
-    Bob--x Alice: I am good thanks!
-    Bob-x John: I am good thanks!
-    Note right of John: Bob thinks a long<br/>long time, so long<br/>that the text does<br/>not fit on a row.
+    Job ->> STS: Assume "Orchestrator" role
+    STS -->> Job: Return credentials
 
-    Bob-->Alice: Checking with John...
-    Alice->John: Yes... John, how are you?
+    Job ->> Org: Get list of Organization accounts
+    Org -->> Job: Return list of account IDs
+
+    Job ->> K8S: Create Jobs for each target account
 ```
 
+### Runner sequence
+
 ```mermaid
-graph TD
-    A["inventory-orchestrator" K8S CronJob] --> B("aws-inventory-orchestrator-sa" K8S SA)
-    B --> C["Inventory-Orchestrator" AWS IAM role ]
-    C -->|One| D[Laptop]
-    C -->|Two| E[iPhone]
-    C -->|Three| F[fa:fa-car Car]
+sequenceDiagram
+    autonumber
+    participant assume as "Assume" init container
+    participant STS as AWS STS
+    participant inventory as "Inventory" init container
+    participant API as AWS APIs
+    participant upload as "Upload" container
+    participant bucket as Inventory S3 bucket
+
+    assume ->> STS: Assume "Runner" role<br>in "Security" account
+    STS -->> assume: Return "Runner" credentials
+    assume ->> STS: Assume "Inventory" role<br>in target account<br>using the "Runner" role
+    STS -->> assume: Return "inventory" credentials
+    assume ->> inventory: Pass "inventory" credentials<br>through mounted volume
+
+    inventory  ->> API: Run inventory against AWS' APIs
+    API -->> inventory: Return list of resources
+    inventory ->> upload: Pass inventory report<br>through mounted volume
+
+    upload ->> bucket: Upload inventory report to S3 bucket
 ```
 
 ## Inventory IAM roles
@@ -121,36 +136,43 @@ The following files under `/infrastructure/policies/` are used to configure the 
 | `inventory_properties.json` | Various properties for the role, including any managed permission policies to attach |
 | `inventory_trust.json`      | The role trust policy document                                                       |
 
-### Inventory-Orchestrator-Test trust relationships
+### Inventory-Orchestrator trust relationships
 
 ```mermaid
-graph TD
-    A[OIDC provider in *Prod*] --> B("aws-inventory-orchestrator-sa" K8S SA)
-    B --> C["Inventory-Orchestrator" AWS IAM role ]
-    C -->|One| D[Laptop]
-    C -->|Two| E[iPhone]
-    C -->|Three| F[fa:fa-car Car]
+flowchart TD
+    subgraph "<i>Billing</i> AWS account"
+        A[<i>Orchestrator</i> IAM role] -->|Trust| B[OIDC provider]
+        A -->|Permissions| E[List Organization accounts]
+    end
+    subgraph "K8S AWS account"
+        B -. Reference .-> C[K8S OIDC endpoint]
+        A -->|Trust| D[<i>Orchestrator</i> K8S SA]
+    end
 ```
+
+The only difference between the `Inventory-Orchestrator` and `Inventory-Orchestrator-Test` role, is the trusted OIDC providers. The non-`Test` role trust OIDC providers referencing OIDC endpoints of production Kubernetes clusters, whereas the `-Test` role trust OIDC providers for any test/sandbox clusters.
+
+### Inventory-Runner trust relationship
 
 ```mermaid
-graph TD
-    A(K8S service account in test cluster A) --> B(OIDC provider for test cluster A)
-    B -->|Assume| E(Inventory-Orchestrator-Test IAM role)
-
-    C(K8S service account in test cluster B) --> D("Orchestrator" K8S service account/OIDC for test cluster B)
-    D --> E
-
+flowchart TD
+    subgraph "<i>Security</i> AWS account"
+        A[<i>Runner</i> IAM role] -->|Trust| B[OIDC provider]
+        A -->|Permissions| G[Upload inventory to S3]
+    end
+    subgraph "Kubernetes cluster"
+        B -. Reference .-> C[K8S OIDC endpoint]
+        A -->|Trust| D[<i>Runner</i> K8S SA]
+        D -->|Permissions| H[Get pods<br>Create jobs]
+    end
+    subgraph "AWS org account 1"
+        A -->|Assume| E[<i>inventory</i> IAM role]
+        E -->|Trust| A
+        E -->|Permissions| F[Get*<br>List*<br>Describe*]
+    end
 ```
 
----
-
-```mermaid
-graph TD
-
-    E(Inventory-Orchestrator-Test IAM role) -->|Trust| F("Orchestrator" K8S service account/OIDC for test cluster A)
-    E -->|Trust| G("Orchestrator" K8S service account/OIDC for test cluster B)
-
-```
+The only difference between the `Inventory-Runner` and `Inventory-Runner-Test` role, is the trusted OIDC providers. The non-`Test` role trust OIDC providers referencing OIDC endpoints of production Kubernetes clusters, whereas the `-Test` role trust OIDC providers for any test/sandbox clusters.
 
 ## Development
 
