@@ -62,6 +62,7 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 	var backOffLimit int32 = 0
 
 	// create new job spec
+	var runAsUser int64 = 999
 	jobSpec := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			GenerateName: fmt.Sprintf("%s-", assumeJobSpec.JobName),
@@ -77,6 +78,12 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 					},
 				},
 				Spec: v1.PodSpec{
+					SecurityContext: &v1.PodSecurityContext{
+						RunAsUser: &runAsUser, // psp
+						SeccompProfile: &v1.SeccompProfile{
+							Type: "RuntimeDefault", // psp
+						},
+					},
 					Volumes: []v1.Volume{
 						{
 							Name: assumeJobSpec.CredsVolName,

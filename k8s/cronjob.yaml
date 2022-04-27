@@ -39,6 +39,7 @@ spec:
                     fieldRef:
                       fieldPath: metadata.namespace
           securityContext:
+            runAsUser: 999
             seccompProfile:
               type: RuntimeDefault
           restartPolicy: OnFailure
