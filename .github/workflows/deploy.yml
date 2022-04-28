@@ -1,5 +1,13 @@
 name: Deploy to Kubernetes (WIP)
 
+env:
+  BILLING_ACCOUNT_ID: ${{ secrets.BILLING_ACCOUNT_ID }}
+  SECURITY_ACCOUNT_ID: ${{ secrets.SECURITY_ACCOUNT_ID }}
+  BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+  ORCHESTRATOR_ROLE: "Inventory-Orchestrator"
+  RUNNER_ROLE: "Inventory-Runner"
+  CRON_SCHEDULE: "* * * * 0"
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
