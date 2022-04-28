@@ -1,0 +1,34 @@
+name: Deploy to Kubernetes (WIP)
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+#  push:
+#    branches: [ main ]
+#  pull_request:
+#    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      IMG_TAG:
+        description: "IMG_TAG"
+        required: true
+        default: "latest"
+        
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: Print kubectl & kustomize versions
+        run: |-
+          kubectl version
+          kustomize version
+          
+      - name: Show kustomization.yaml
+        run: |-
+          cd k8s
+          cat kustomization.yaml
