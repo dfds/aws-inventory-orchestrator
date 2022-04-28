@@ -47,3 +47,7 @@ jobs:
           ./generate-vars-file.sh
           cat ./k8s/vars.env
   
+      - name: Show Kustomized manifests
+        run: |-
+          kustomize build ./k8s
+  
