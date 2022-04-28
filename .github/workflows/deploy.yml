@@ -36,7 +36,7 @@ jobs:
 
       - name: Print kubectl & kustomize versions
         run: |-
-          kubectl version --client
+          kubectl version
           kustomize version
           
       - name: Show kustomization.yaml
