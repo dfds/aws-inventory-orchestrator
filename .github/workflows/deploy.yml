@@ -6,7 +6,7 @@ env:
   BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
   ORCHESTRATOR_ROLE: "Inventory-Orchestrator"
   RUNNER_ROLE: "Inventory-Runner"
-  CRON_SCHEDULE: "* * * * 0"
+  CRON_SCHEDULE: "0 0 * * 0" # midnight every Sunday
   INCLUDE_ACCOUNTS: ""
 
 # Controls when the workflow will run
