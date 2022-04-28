@@ -7,6 +7,7 @@ env:
   ORCHESTRATOR_ROLE: "Inventory-Orchestrator"
   RUNNER_ROLE: "Inventory-Runner"
   CRON_SCHEDULE: "* * * * 0"
+  INCLUDE_ACCOUNTS: ""
 
 # Controls when the workflow will run
 on:
@@ -42,8 +43,6 @@ jobs:
           cat kustomization.yaml
           
       - name: Generate vars.env file
-        env:
-          BILLING_ACCOUNT_ID: ${{ secrets.BILLING_ACCOUNT_ID }}
         run: |-
           ./generate-vars-file.sh
           cat ./k8s/vars.env
