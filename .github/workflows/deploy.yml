@@ -42,6 +42,8 @@ jobs:
           cat kustomization.yaml
           
       - name: Generate vars.env file
+        env:
+          BILLING_ACCOUNT_ID: ${{ secrets.BILLING_ACCOUNT_ID }}
         run: |-
           ./generate-vars-file.sh
           cat ./k8s/vars.env
