@@ -44,5 +44,5 @@ jobs:
       - name: Generate vars.env file
         run: |-
           ./generate-vars-file.sh
-          stat ./k8s/vars.env
+          cat ./k8s/vars.env
   
