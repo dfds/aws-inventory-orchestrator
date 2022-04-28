@@ -19,11 +19,6 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-    inputs:
-      IMG_TAG:
-        description: "IMG_TAG"
-        required: true
-        default: "latest"
         
 jobs:
   deploy:
@@ -50,4 +45,9 @@ jobs:
       - name: Show Kustomized manifests
         run: |-
           kustomize build ./k8s
+  
+      - name: Deploy to Kubernetes
+        run: |-
+          kubectl apply -f ./k8s_initial
+          kustomize build ./k8s | kubectl apply -f -
   
