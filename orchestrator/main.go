@@ -13,7 +13,7 @@ import (
 func main() {
 
 	now := time.Now().UTC()
-	s3Bucket := os.Args[2]
+	s3Bucket := os.Args[1]
 
 	// display caller identity; useful during the debug phase
 	fmt.Println("Assumed role:")
@@ -21,7 +21,11 @@ func main() {
 	fmt.Println(callerIdentity)
 
 	// get accounts to target for inventory
-	includeAccountIds := strings.Split(os.Args[1], ",")
+	var includeAccountIds []string
+	if len(os.Args[2]) > 0 {
+		includeAccountIds = strings.Split(os.Args[2], ",")
+	}
+
 	acct, err := aws.OrgAccountList(includeAccountIds)
 	if err != nil {
 		fmt.Println("%v\n", err)
