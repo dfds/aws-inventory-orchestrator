@@ -39,8 +39,6 @@ func OrgAccountList(includeAccountIds []string) ([]types.Account, error) {
 	}
 
 	// Filter account list
-	fmt.Println(includeAccountIds)
-	fmt.Println(len(includeAccountIds))
 	if len(includeAccountIds) > 0 {
 		var filteredAccountList []types.Account
 		for _, v := range accountList {
