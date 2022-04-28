@@ -27,8 +27,8 @@ spec:
               imagePullPolicy: Always
               name: orchestrator
               args:
-                - $(INCLUDE_ACCOUNTS)
                 - $(BUCKET_NAME)
+                - $(INCLUDE_ACCOUNTS)
               env:
                 - name: MY_POD_NAME
                   valueFrom:
