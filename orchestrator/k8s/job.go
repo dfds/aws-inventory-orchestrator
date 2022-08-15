@@ -78,12 +78,12 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 					},
 				},
 				Spec: v1.PodSpec{
-					SecurityContext: &v1.PodSecurityContext{
-						RunAsUser: &runAsUser, // psp
-						SeccompProfile: &v1.SeccompProfile{
-							Type: "RuntimeDefault", // psp
-						},
-					},
+					//SecurityContext: &v1.PodSecurityContext{
+					//	RunAsUser: &runAsUser, // psp
+					//	SeccompProfile: &v1.SeccompProfile{
+					//		Type: "RuntimeDefault", // psp
+					//	},
+					//},
 					Volumes: []v1.Volume{
 						{
 							Name: assumeJobSpec.CredsVolName,
