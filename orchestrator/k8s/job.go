@@ -62,7 +62,7 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 	var backOffLimit int32 = 0
 
 	// create new job spec
-	var runAsUser int64 = 999
+	//var runAsUser int64 = 999
 	jobSpec := &batchv1.Job{
 		ObjectMeta: metav1.ObjectMeta{
 			GenerateName: fmt.Sprintf("%s-", assumeJobSpec.JobName),
