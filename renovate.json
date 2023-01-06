@@ -1,0 +1,44 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "branchPrefix": "feature/renovate/",
+    "username": "devex-sa",
+    "onboarding": false,
+    "platform": "github",
+    "repositories": [
+        "dfds/aws-inventory-orchestrator"
+    ],
+    "kubernetes": {
+        "fileMatch": [
+            "k8s/.+\\.yaml$"
+        ]
+    },
+    "packageRules": [
+        {
+            "matchUpdateTypes": [
+                "pin",
+                "digest",
+                "patch",
+                "lockFileMaintenance"
+            ],
+            "stabilityDays": 1,
+            "automerge": true,
+            "matchCurrentVersion": "!/^0/",
+            "ignoreTests": true
+        },
+        {
+            "matchUpdateTypes": [
+                "minor"
+            ],
+            "stabilityDays": 7,
+            "automerge": true,
+            "matchCurrentVersion": "!/^0/"
+        },
+        {
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "stabilityDays": 14,
+            "automerge": false
+        }
+    ]
+}
