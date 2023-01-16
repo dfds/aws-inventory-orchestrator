@@ -61,6 +61,10 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 	jobs := clientset.BatchV1().Jobs(assumeJobSpec.JobNamespace)
 	var backOffLimit int32 = 0
 
+	// Clena up finished jobs immediately after they are finished:
+	// https://kubernetes.io/docs/concepts/workloads/controllers/job/#ttl-mechanism-for-finished-jobs
+	var ttl int32 = 0
+
 	// create new job spec
 	//var runAsUser int64 = 999
 	jobSpec := &batchv1.Job{
@@ -69,6 +73,7 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 			Namespace:    assumeJobSpec.JobNamespace,
 		},
 		Spec: batchv1.JobSpec{
+			TTLSecondsAfterFinished: &ttl,
 			Template: v1.PodTemplateSpec{
 				ObjectMeta: metav1.ObjectMeta{
 					Labels: map[string]string{
