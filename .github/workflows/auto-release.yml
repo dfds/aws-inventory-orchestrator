@@ -3,6 +3,10 @@ name: Auto release on merge
 on:
   push:
     branches: ["master", "main"]
+    paths:
+      - "Dockerfile"
+      - "orchestrator/**"
+      - "runner/**"
 
 jobs:
   auto-release:

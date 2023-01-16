@@ -61,7 +61,7 @@ func CreateJob(assumeJobSpec *AssumeJobSpec) {
 	jobs := clientset.BatchV1().Jobs(assumeJobSpec.JobNamespace)
 	var backOffLimit int32 = 0
 
-	// Clena up finished jobs immediately after they are finished:
+	// Clean up finished jobs immediately after they are finished:
 	// https://kubernetes.io/docs/concepts/workloads/controllers/job/#ttl-mechanism-for-finished-jobs
 	var ttl int32 = 0
 
