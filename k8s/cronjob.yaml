@@ -23,7 +23,7 @@ spec:
         spec:
           serviceAccountName: aws-inventory-orchestrator-sa
           containers:
-            - image: dfdsdk/aws-inventory-orchestrator:0.0.15
+            - image: dfdsdk/aws-inventory-orchestrator:0.0.16
               imagePullPolicy: Always
               name: orchestrator
               args:
