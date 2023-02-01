@@ -8,7 +8,7 @@ require (
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.15.1
 	k8s.io/api v0.26.1
 	k8s.io/apimachinery v0.26.1
-	k8s.io/client-go v0.26.1
+	k8s.io/client-go/v12 v12.0.0
 )
 
 require (
