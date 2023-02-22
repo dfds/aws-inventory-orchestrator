@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/aws/aws-sdk-go v1.44.205
 	github.com/aws/aws-sdk-go-v2/config v1.18.14
-	github.com/aws/aws-sdk-go-v2/service/organizations v1.18.2
+	github.com/aws/aws-sdk-go-v2/service/organizations v1.18.3
 	k8s.io/api v0.26.1
 	k8s.io/apimachinery v0.26.1
 	k8s.io/client-go v0.26.1
