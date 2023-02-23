@@ -40,5 +40,8 @@
             "stabilityDays": 14,
             "automerge": false
         }
-    ]
+    ],
+    "azure-pipelines": {
+        "enabled": true
+    }
 }
