@@ -3,7 +3,7 @@ module github.com/dfds/aws-inventory-orchestrator/orchestrator
 go 1.17
 
 require (
-	github.com/aws/aws-sdk-go v1.44.209
+	github.com/aws/aws-sdk-go v1.44.210
 	github.com/aws/aws-sdk-go-v2/config v1.18.15
 	github.com/aws/aws-sdk-go-v2/service/organizations v1.18.4
 	k8s.io/api v0.26.1
