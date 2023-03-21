@@ -161,7 +161,9 @@ Example usage:
 ```bash
 # Variables
 BILLING_ACCOUNT_ID=""
+BILLING_ACCOUNT_ROLE_NAME=""
 SECURITY_ACCOUNT_ID=""
+SECURITY_ACCOUNT_ROLE_NAME=""
 CLI_BUCKET_NAME=""
 INVENTORY_BUCKET_NAME=""
 OIDC_PROVIDER_PROD=""
@@ -174,8 +176,8 @@ ORCHESTRATOR_ROLE_DEPLOY="Inventory-Orchestrator"
 RUNNER_ROLE_DEPLOY="Inventory-Runner"
 
 # Login with SAML to the Billing and Security account
-saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile ${BILLING_AWS_PROFILE} --skip-prompt
-saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile ${SECURITY_AWS_PROFILE} --skip-prompt
+go-aws-sso assume -p ${BILLING_AWS_PROFILE} --account-id ${BILLING_ACCOUNT_ID} --role-name ${BILLING_ACCOUNT_ROLE_NAME}
+go-aws-sso assume -p ${SECURITY_AWS_PROFILE} --account-id ${SECURITY_ACCOUNT_ID} --role-name ${SECURITY_ACCOUNT_ROLE_NAME}
 
 # Provision infrastructure
 ./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE_DEPLOY}" --runner-role "${RUNNER_ROLE_DEPLOY}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
@@ -186,7 +188,9 @@ saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --prof
 ```powershell
 # Variables
 $BILLING_ACCOUNT_ID=""
+$BILLING_ACCOUNT_ROLE_NAME=""
 $SECURITY_ACCOUNT_ID=""
+$SECURITY_ACCOUNT_ROLE_NAME=""
 $CLI_BUCKET_NAME=""
 $INVENTORY_BUCKET_NAME=""
 $OIDC_PROVIDER_PROD=""
@@ -199,8 +203,8 @@ $ORCHESTRATOR_ROLE_DEPLOY="Inventory-Orchestrator"
 $RUNNER_ROLE_DEPLOY="Inventory-Runner"
 
 # Login with SAML to the Billing and Security account
-saml2aws login --role arn:aws:iam::${BILLING_ACCOUNT_ID}:role/ADFS-Admin --profile ${BILLING_AWS_PROFILE} --skip-prompt
-saml2aws login --role arn:aws:iam::${SECURITY_ACCOUNT_ID}:role/CloudAdmin --profile ${SECURITY_AWS_PROFILE} --skip-prompt
+go-aws-sso assume -p ${BILLING_AWS_PROFILE} --account-id ${BILLING_ACCOUNT_ID} --role-name ${BILLING_ACCOUNT_ROLE_NAME}
+go-aws-sso assume -p ${SECURITY_AWS_PROFILE} --account-id ${SECURITY_ACCOUNT_ID} --role-name ${SECURITY_ACCOUNT_ROLE_NAME}
 
 # Provision infrastructure
 ./infrastructure --billing-aws-profile "${BILLING_AWS_PROFILE}" --security-aws-profile "${SECURITY_AWS_PROFILE}" --cli-bucket-name "${CLI_BUCKET_NAME}" --inventory-bucket-name "${INVENTORY_BUCKET_NAME}" --inventory-role "${INVENTORY_ROLE}" --orchestrator-role "${ORCHESTRATOR_ROLE_DEPLOY}" --runner-role "${RUNNER_ROLE_DEPLOY}" --oidc-provider-prod "${OIDC_PROVIDER_PROD}"
@@ -257,7 +261,7 @@ ce aws --include-account-ids "${BILLING_ACCOUNT_ID},${SECURITY_ACCOUNT_ID}" crea
 ### Development process
 
 - Set Kubernetes context to sandbox cluster
-  - Login using `saml2aws` if needed
+  - Login using `go-aws-sso` if needed
   - Verify with `kubectl get nodes`
 - Run `skaffold dev`
 
