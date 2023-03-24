@@ -22,6 +22,7 @@
             ],
             "stabilityDays": 1,
             "automerge": true,
+            "automergeType": "branch",
             "matchCurrentVersion": "!/^0/",
             "ignoreTests": true
         },
@@ -31,6 +32,7 @@
             ],
             "stabilityDays": 7,
             "automerge": true,
+            "automergeType": "branch",
             "matchCurrentVersion": "!/^0/"
         },
         {
