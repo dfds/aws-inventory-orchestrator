@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.18
-	github.com/aws/aws-sdk-go-v2/service/iam v1.19.7
+	github.com/aws/aws-sdk-go-v2/service/iam v1.19.8
 	github.com/aws/aws-sdk-go-v2/service/s3 v1.30.6
 	github.com/aws/aws-sdk-go-v2/service/sts v1.18.7
 )
