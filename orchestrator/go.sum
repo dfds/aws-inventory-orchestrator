@@ -100,6 +100,8 @@ github.com/aws/aws-sdk-go v1.44.225 h1:JNJpUg+M1cm4jtKnyex//Mw1Rv8QN/kWT3dtr+oLd
 github.com/aws/aws-sdk-go v1.44.225/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
 github.com/aws/aws-sdk-go v1.44.226 h1:lqTNeHJUq0U6dpMGJc9ZcmfTUkuAjklcwewj96RhMlc=
 github.com/aws/aws-sdk-go v1.44.226/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
+github.com/aws/aws-sdk-go v1.44.227 h1:HWNpINBu20yyfEXGHHSIsB955KUjWmZJETqnLIXizN4=
+github.com/aws/aws-sdk-go v1.44.227/go.mod h1:aVsgQcEevwlmQ7qHE9I3h+dtQgpqhFB+i8Phjh7fkwI=
 github.com/aws/aws-sdk-go-v2 v1.17.3 h1:shN7NlnVzvDUgPQ+1rLMSxY8OWRNDRYtiqe0p/PgrhY=
 github.com/aws/aws-sdk-go-v2 v1.17.3/go.mod h1:uzbQtefpm44goOPmdKyAlXSNcwlRgF3ePWVW6EtJvvw=
 github.com/aws/aws-sdk-go-v2 v1.17.4 h1:wyC6p9Yfq6V2y98wfDsj6OnNQa4w2BLGCLIxzNhwOGY=
