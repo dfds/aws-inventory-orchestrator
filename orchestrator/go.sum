@@ -308,6 +308,8 @@ github.com/aws/aws-sdk-go-v2/service/organizations v1.19.3 h1:N96uTzBDXPheRxMulV
 github.com/aws/aws-sdk-go-v2/service/organizations v1.19.3/go.mod h1:JwocX44NP3XrNrxinPbTvuWxH0JBriJZT/LFPsL7rNU=
 github.com/aws/aws-sdk-go-v2/service/organizations v1.19.4 h1:zDYlPD6AUmVRA0MUa4zY6qN/g8dOvptfk2JfW7jFFEk=
 github.com/aws/aws-sdk-go-v2/service/organizations v1.19.4/go.mod h1:JwocX44NP3XrNrxinPbTvuWxH0JBriJZT/LFPsL7rNU=
+github.com/aws/aws-sdk-go-v2/service/organizations v1.19.5 h1:/YS7ZF+ZJqv3QE4a8C7gQcXeSmmMFgDo0LrYkoICF6g=
+github.com/aws/aws-sdk-go-v2/service/organizations v1.19.5/go.mod h1:zw4Ac19gtzc4cdtfBCTZa7FlrXYh8tbUl3Jr7movexs=
 github.com/aws/aws-sdk-go-v2/service/sso v1.12.0 h1:/2gzjhQowRLarkkBOGPXSRnb8sQ2RVsjdG1C/UliK/c=
 github.com/aws/aws-sdk-go-v2/service/sso v1.12.0/go.mod h1:wo/B7uUm/7zw/dWhBJ4FXuw1sySU5lyIhVg1Bu2yL9A=
 github.com/aws/aws-sdk-go-v2/service/sso v1.12.1 h1:lQKN/LNa3qqu2cDOQZybP7oL4nMGGiFqob0jZJaR8/4=
