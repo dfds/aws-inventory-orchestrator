@@ -18,6 +18,7 @@
                 "pin",
                 "digest",
                 "patch",
+                "minor",
                 "lockFileMaintenance"
             ],
             "stabilityDays": 1,
@@ -25,22 +26,13 @@
             "automergeType": "branch",
             "matchCurrentVersion": "!/^0/",
             "ignoreTests": true
-        },
-        {
-            "matchUpdateTypes": [
-                "minor"
-            ],
-            "stabilityDays": 7,
-            "automerge": true,
-            "automergeType": "branch",
-            "matchCurrentVersion": "!/^0/"
-        },
+        }
         {
             "matchUpdateTypes": [
                 "major"
             ],
-            "stabilityDays": 14,
-            "automerge": false
+            "stabilityDays": 2,
+            "automerge": true
         }
     ]
 }
