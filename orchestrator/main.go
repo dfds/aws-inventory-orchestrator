@@ -52,7 +52,7 @@ func main() {
 				AssumeCmd:          []string{"./app/runner"},
 				AssumeArgs:         []string{roleArn},
 				InventoryName:      "inventory",
-				InventoryImage:     "darkbitio/aws_recon:latest",
+				InventoryImage:     "darkbitio/aws_recon:0.5.33",
 				InventoryCmd:       []string{"aws_recon"},
 				InventoryArgs:      []string{"-v", "-r", "global,eu-west-1,eu-central-1"},
 				UploadName:         "upload",
