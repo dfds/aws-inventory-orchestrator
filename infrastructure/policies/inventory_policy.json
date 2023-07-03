@@ -39,7 +39,7 @@
                 "organizations:ListPolicies",
                 "redshift:Describe*",
                 "route53domains:ListDomains",
-                "s3:GetBucketLocation",
+                "s3:GetBucket*",
                 "secretsmanager:List*",
                 "securityhub:Describe*",
                 "servicequotas:List*",
